@@ -33,16 +33,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const initAuth = () => {
-      const userAuth = isAuthenticated();
-      if (userAuth) {
-        const userData = getCurrentUser();
-        setUser(userData);
-        setIsLoggedIn(true);
+      try {
+        const userAuth = isAuthenticated();
+        if (userAuth) {
+          const userData = getCurrentUser();
+          setUser(userData);
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.log('Auth initialization error:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
-    initAuth();
+    // Use setTimeout to ensure the app renders first
+    setTimeout(initAuth, 0);
   }, []);
 
   const handleLogout = () => {

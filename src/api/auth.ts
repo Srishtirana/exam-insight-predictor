@@ -1,7 +1,6 @@
 /* eslint-disable */
 import axios from "axios";
-
-const API_URL = "http://localhost:5000/api";
+import { API_URL, isBackendAvailable } from "../config/api";
 
 export interface AuthCredentials {
   email: string;
@@ -22,6 +21,19 @@ export interface LoginResponse {
 }
 
 export const signup = async (userData: SignupData): Promise<LoginResponse> => {
+  if (!isBackendAvailable()) {
+    // Mock response for GitHub Pages
+    const mockUser = {
+      id: "mock-user-id",
+      name: userData.name,
+      email: userData.email
+    };
+    const mockToken = "mock-token-" + Date.now();
+    localStorage.setItem("token", mockToken);
+    localStorage.setItem("user", JSON.stringify(mockUser));
+    return { token: mockToken, user: mockUser };
+  }
+
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
     if (response.data.token) {
@@ -37,6 +49,19 @@ export const signup = async (userData: SignupData): Promise<LoginResponse> => {
 export const login = async (
   credentials: AuthCredentials
 ): Promise<LoginResponse> => {
+  if (!isBackendAvailable()) {
+    // Mock response for GitHub Pages
+    const mockUser = {
+      id: "mock-user-id",
+      name: "Demo User",
+      email: credentials.email
+    };
+    const mockToken = "mock-token-" + Date.now();
+    localStorage.setItem("token", mockToken);
+    localStorage.setItem("user", JSON.stringify(mockUser));
+    return { token: mockToken, user: mockUser };
+  }
+
   try {
     const response = await axios.post(`${API_URL}/auth/login`, credentials);
     if (response.data.token) {

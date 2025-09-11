@@ -1,7 +1,6 @@
 /* eslint-disable */
 import axios from "axios";
-
-const API_URL = "http://localhost:5000/api";
+import { API_URL, isBackendAvailable } from "../config/api";
 
 export interface UserStats {
   totalAttempts: number;
@@ -19,6 +18,11 @@ export interface UserStats {
 }
 
 export const getUserStats = async (): Promise<UserStats> => {
+  if (!isBackendAvailable()) {
+    // Return mock stats for GitHub Pages
+    return getSimulatedUserStats();
+  }
+
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API_URL}/user/dashboard`, {

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import axios from "axios";
-
-const API_URL = "http://localhost:5000/api";
+import { API_URL, isBackendAvailable } from "../config/api";
+import { getMockQuestions, getMockFeedback } from "./mockExamService";
 
 export interface ExamParams {
   examType: string;
@@ -45,6 +45,18 @@ export interface ExamFeedbackResponse {
 export const startExam = async (
   params: ExamParams
 ): Promise<{ examId: string; questions: Question[]; aiGenerated?: boolean; message?: string }> => {
+  if (!isBackendAvailable()) {
+    // Use mock questions for GitHub Pages
+    const examId = Math.random().toString(36).substring(2, 15);
+    const questions = getMockQuestions(params.examType, params.subject, params.difficulty, params.numberOfQuestions);
+    return {
+      examId,
+      questions,
+      aiGenerated: false,
+      message: `Using ${questions.length} demo questions for ${params.examType} ${params.subject}`
+    };
+  }
+
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/start`, params, {
@@ -61,6 +73,17 @@ export const startExam = async (
 export const submitExam = async (
   submission: ExamSubmission
 ): Promise<ExamResult & { aiFeedback?: string }> => {
+  if (!isBackendAvailable()) {
+    // Use mock submission for GitHub Pages
+    const questions = getMockQuestions("JEE", "physics", "easy", 5); // Default questions
+    const result = simulateExamSubmission(submission, questions);
+    const feedback = getMockFeedback(result.correctAnswers, result.totalQuestions, "JEE", "physics");
+    return {
+      ...result,
+      aiFeedback: feedback
+    };
+  }
+
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/submit`, submission, {

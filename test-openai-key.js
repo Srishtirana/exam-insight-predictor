@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 
 async function testOpenAIKey() {
   console.log('🔑 Testing OpenAI API Key Integration...\n');

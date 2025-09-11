@@ -7,7 +7,7 @@ import { componentTagger } from "lovable-tagger";
 export default defineConfig(({ mode }) => ({
   // ✅ IMPORTANT: Base path for GitHub Pages
   // Replace "exam-insight-predictor" with your repo name if different
-  base: mode === "production" ? "/exam-insight-predictor/" : "/",
+  base: "/exam-insight-predictor/",
 
   server: {
     host: "::",

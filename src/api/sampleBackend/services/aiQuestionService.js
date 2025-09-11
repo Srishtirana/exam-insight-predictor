@@ -128,6 +128,12 @@ const EXAM_CONFIGS = {
 class AIQuestionService {
   static async generateQuestions(examType, subject, difficulty, numberOfQuestions) {
     try {
+      // Check if OpenAI API key is available
+      if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'your-openai-api-key-here') {
+        console.log("OpenAI API key not configured, using fallback questions.");
+        return this.generateFallbackQuestions(examType, subject, difficulty, numberOfQuestions);
+      }
+
       const config = EXAM_CONFIGS[examType];
       if (!config || !config.subjects[subject]) {
         throw new Error(`Invalid exam type or subject: ${examType} - ${subject}`);
@@ -159,49 +165,151 @@ class AIQuestionService {
       return this.parseGeneratedQuestions(generatedContent, examType, subject, difficulty);
     } catch (error) {
       console.error('Error generating AI questions:', error);
-      throw new Error('Failed to generate questions. Please try again.');
+      console.log('Falling back to fallback questions...');
+      return this.generateFallbackQuestions(examType, subject, difficulty, numberOfQuestions);
     }
   }
 
   static createPrompt(examType, subject, difficulty, difficultyDescription, topics, numberOfQuestions) {
-    const randomTopics = this.getRandomTopics(topics, 3);
+    const topicList = topics.join(', ');
     
-    return `Generate ${numberOfQuestions} multiple-choice questions for ${examType} ${subject} exam.
+    return `Generate ${numberOfQuestions} high-quality multiple choice questions for ${examType} ${subject} exam at ${difficulty} difficulty level.
 
-Exam Type: ${examType}
-Subject: ${subject}
-Difficulty Level: ${difficulty} (${difficultyDescription})
-Topics to focus on: ${randomTopics.join(', ')}
+EXAM CONTEXT:
+- Exam Type: ${examType}
+- Subject: ${subject}
+- Difficulty: ${difficulty} - ${difficultyDescription}
+- Topics to cover: ${topicList}
 
-Requirements:
-1. Each question should be challenging and relevant to the exam level
-2. Questions should test conceptual understanding, not just memorization
-3. Each question must have exactly 4 options (A, B, C, D)
-4. Include a mix of numerical and conceptual questions
-5. Ensure questions are accurate and educationally valuable
-6. Make options plausible but with one clearly correct answer
+QUESTION REQUIREMENTS:
+1. Each question must have exactly 4 options (A, B, C, D)
+2. Questions should be realistic and similar to actual ${examType} exam questions
+3. Include numerical problems, conceptual questions, and application-based questions
+4. Ensure questions test understanding, not just memorization
+5. Make options plausible but only one should be correct
+6. Include step-by-step solutions for numerical problems
 
-Format each question as JSON:
-{
-  "questionText": "Question text here",
-  "options": [
-    {"id": 0, "text": "Option A"},
-    {"id": 1, "text": "Option B"},
-    {"id": 2, "text": "Option C"},
-    {"id": 3, "text": "Option D"}
-  ],
-  "correctAnswerIndex": 0,
-  "explanation": "Brief explanation of the correct answer"
-}
+OUTPUT FORMAT:
+For each question, provide:
+Question: [The question text]
+A) [Option 1]
+B) [Option 2] 
+C) [Option 3]
+D) [Option 4]
+Correct Answer: [A/B/C/D]
+Explanation: [Detailed explanation of why the answer is correct]
 
-Return only the JSON array of questions, no additional text.`;
+Generate questions that would appear in real ${examType} exams and help students prepare effectively.`;
   }
 
-  static getRandomTopics(topics, count) {
-    const shuffled = topics.sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
+  // AI-powered performance analysis
+  static async analyzePerformance(attemptData) {
+    try {
+      // Check if OpenAI API key is available
+      if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'your-openai-api-key-here') {
+        return this.generateFallbackFeedback(attemptData);
+      }
+
+      const { examType, subject, difficulty, score, totalQuestions, questions, answers } = attemptData;
+      
+      const prompt = `Analyze the exam performance and provide detailed feedback for a ${examType} ${subject} exam.
+
+EXAM DETAILS:
+- Exam Type: ${examType}
+- Subject: ${subject}
+- Difficulty: ${difficulty}
+- Score: ${score}/${totalQuestions} (${Math.round((score/totalQuestions)*100)}%)
+- Total Questions: ${totalQuestions}
+
+PERFORMANCE ANALYSIS:
+Please provide:
+1. Overall performance assessment
+2. Strengths identified
+3. Areas for improvement
+4. Specific study recommendations
+5. Tips for better performance in future exams
+6. Subject-specific advice for ${subject}
+
+Make the feedback encouraging but honest, and provide actionable advice for improvement.`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert educational counselor and exam analyst. Provide detailed, constructive feedback on exam performance with specific improvement suggestions."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 1000
+      });
+
+      return response.choices[0].message.content;
+    } catch (error) {
+      console.error('Error analyzing performance:', error);
+      return this.generateFallbackFeedback(attemptData);
+    }
   }
 
+  // Generate fallback feedback when AI is not available
+  static generateFallbackFeedback(attemptData) {
+    const { examType, subject, difficulty, score, totalQuestions } = attemptData;
+    const percentage = Math.round((score/totalQuestions)*100);
+    
+    let performance = "";
+    let advice = "";
+    
+    if (percentage >= 80) {
+      performance = "Excellent performance! You have a strong grasp of the concepts.";
+      advice = "Continue practicing advanced problems and maintain your current study routine.";
+    } else if (percentage >= 60) {
+      performance = "Good performance with room for improvement.";
+      advice = "Focus on understanding the concepts you missed and practice more problems.";
+    } else if (percentage >= 40) {
+      performance = "Average performance. More practice is needed.";
+      advice = "Review fundamental concepts and practice basic problems before moving to advanced ones.";
+    } else {
+      performance = "Below average performance. Focus on strengthening your basics.";
+      advice = "Start with basic concepts, get help from teachers or study materials, and practice regularly.";
+    }
+
+    return `PERFORMANCE ANALYSIS FOR ${examType} ${subject.toUpperCase()} EXAM
+
+Overall Assessment: ${performance}
+
+Score: ${score}/${totalQuestions} (${percentage}%)
+
+Strengths:
+- Completed the exam successfully
+- Demonstrated knowledge in some areas
+
+Areas for Improvement:
+- Focus on topics where you scored lower
+- Practice more problems in ${subject}
+
+Recommendations:
+${advice}
+
+Study Tips:
+1. Review all incorrect answers and understand the concepts
+2. Practice similar problems regularly
+3. Create a study schedule for ${subject}
+4. Take more practice tests to improve speed and accuracy
+
+Subject-Specific Advice for ${subject}:
+- Focus on understanding fundamental concepts
+- Practice numerical problems if applicable
+- Review theory and applications
+- Use multiple study resources
+
+Keep practicing and you'll see improvement in your next exam!`;
+  }
+
+  // Enhanced question generation with better parsing
   static parseGeneratedQuestions(content, examType, subject, difficulty) {
     try {
       // Clean the content to extract JSON
@@ -221,14 +329,19 @@ Return only the JSON array of questions, no additional text.`;
         difficulty: difficulty,
         topic: q.topic || 'General',
         explanation: q.explanation || '',
-        aiGenerated: true,
-        createdAt: new Date()
+        aiGenerated: true
       }));
     } catch (error) {
-      console.error('Error parsing generated questions:', error);
+      console.error('Error parsing AI questions:', error);
       throw new Error('Failed to parse generated questions');
     }
   }
+
+  static getRandomTopics(topics, count) {
+    const shuffled = topics.sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
+
 
   static async generateFallbackQuestions(examType, subject, difficulty, numberOfQuestions) {
     // Comprehensive fallback questions database

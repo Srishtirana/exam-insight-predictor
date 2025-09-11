@@ -12,6 +12,9 @@ router.post('/submit', examController.submitExam);
 // POST /api/exam/analyze (AI feedback)
 router.post('/analyze', examController.analyzeAttempt);
 
+// GET /api/exam/feedback/:examId - Get AI feedback for specific exam
+router.get('/feedback/:examId', examController.getAIFeedback);
+
 // POST /api/exam/test-ai - Test AI question generation
 router.post('/test-ai', examController.testAIQuestions);
 

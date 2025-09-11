@@ -60,7 +60,7 @@ export const startExam = async (
 
 export const submitExam = async (
   submission: ExamSubmission
-): Promise<ExamResult> => {
+): Promise<ExamResult & { aiFeedback?: string }> => {
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/submit`, submission, {
@@ -68,7 +68,7 @@ export const submitExam = async (
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data.result;
+    return response.data;
   } catch (error) {
     throw error;
   }
@@ -307,6 +307,25 @@ export const analyzeAttempt = async (
     const response = await axios.post(
       `${API_URL}/exam/analyze`,
       { examId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAIFeedback = async (
+  examId: string
+): Promise<ExamFeedbackResponse> => {
+  try {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(
+      `${API_URL}/exam/feedback/${examId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

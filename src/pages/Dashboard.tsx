@@ -101,7 +101,7 @@ const Dashboard = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {isLoading ? (
             <>
               <Card>
@@ -120,6 +120,15 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <Skeleton className="h-3 w-full rounded-full" />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Study Streak</CardDescription>
+                  <Skeleton className="h-10 w-20 mt-1" />
+                </CardHeader>
+                <CardContent>
+                  <Skeleton className="h-4 w-4/5" />
                 </CardContent>
               </Card>
               <Card>
@@ -143,7 +152,7 @@ const Dashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-sm text-gray-500">
-                    Continue practicing to improve your scores!
+                    {stats.totalAttempts > 0 ? "Keep up the great work!" : "Start your first exam!"}
                   </div>
                 </CardContent>
               </Card>
@@ -162,13 +171,30 @@ const Dashboard = () => {
                   <div className="w-full bg-gray-200 rounded-full h-2.5">
                     <div
                       className={`h-2.5 rounded-full ${
-                        stats.accuracy >= 70
+                        stats.accuracy >= 80
                           ? "bg-exam-green"
-                          : stats.accuracy >= 50
+                          : stats.accuracy >= 60
                           ? "bg-exam-yellow"
                           : "bg-exam-red"
                       }`}
                       style={{ width: `${stats.accuracy}%` }}></div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardDescription>Study Streak</CardDescription>
+                  <CardTitle className="text-4xl">
+                    {stats.studyStreak || 0}
+                    <span className="text-sm font-normal text-gray-500 ml-2">
+                      days
+                    </span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-gray-500">
+                    {stats.studyStreak > 0 ? "🔥 Keep the momentum going!" : "Start building your streak!"}
                   </div>
                 </CardContent>
               </Card>
@@ -188,7 +214,10 @@ const Dashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="text-sm text-gray-500">
-                      Completed on {stats.lastExamDetails.date}
+                      {stats.lastExamDetails.examType} • {stats.lastExamDetails.difficulty}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      {stats.lastExamDetails.date}
                     </div>
                   </CardContent>
                 </Card>
@@ -248,6 +277,59 @@ const Dashboard = () => {
               : null}
           </div>
         </div>
+
+        {/* Performance Insights */}
+        {stats?.insights && stats.insights.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-exam-dark-purple mb-4">
+              💡 Performance Insights
+            </h2>
+            <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+              <CardContent className="p-6">
+                <div className="space-y-3">
+                  {stats.insights.map((insight, index) => (
+                    <div key={index} className="flex items-start gap-3">
+                      <div className="w-2 h-2 rounded-full bg-blue-500 mt-2 flex-shrink-0"></div>
+                      <p className="text-gray-700">{insight}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Performance Trends */}
+        {stats?.recentAttempts && stats.recentAttempts.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-exam-dark-purple mb-4">
+              📈 Recent Performance Trends
+            </h2>
+            <Card>
+              <CardContent className="p-6">
+                <div className="space-y-4">
+                  {stats.recentAttempts.slice(0, 5).map((attempt, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${
+                          attempt.score >= 80 ? 'bg-exam-green' : 
+                          attempt.score >= 60 ? 'bg-exam-yellow' : 'bg-exam-red'
+                        }`}></div>
+                        <div>
+                          <p className="font-medium">{attempt.subject} • {attempt.examType}</p>
+                          <p className="text-sm text-gray-500">{attempt.date}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-lg">{attempt.score}%</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* AI Features Section */}
         <div className="mb-8">

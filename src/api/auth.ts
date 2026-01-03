@@ -1,23 +1,26 @@
-/* eslint-disable */
 import axios from "axios";
 import { API_URL, isBackendAvailable } from "../config/api";
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
 export interface AuthCredentials {
   email: string;
   password: string;
 }
 
-export interface SignupData extends AuthCredentials {
+export type SignupData = {
   name: string;
+  email: string;
+  password: string;
 }
 
 export interface LoginResponse {
   token: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  user: User;
 }
 
 export const signup = async (userData: SignupData): Promise<LoginResponse> => {
@@ -88,17 +91,17 @@ export const login = async (
   }
 };
 
-export const logout = (): void => {
+export const logout = async () => {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-};
-
-export const getCurrentUser = (): any => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  return Promise.resolve();
 };
 
 export const isAuthenticated = (): boolean => {
-  const token = localStorage.getItem("token");
-  return !!token;
+  return !!localStorage.getItem("token");
+};
+
+export const getCurrentUser = (): { id: string; name: string; email: string } | null => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
 };

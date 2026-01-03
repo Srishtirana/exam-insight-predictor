@@ -1,30 +1,23 @@
+import { createContext, ReactNode, useContext, useState, useEffect } from "react";
+import { isAuthenticated as checkAuth, getCurrentUser, logout as authLogout, User } from "../api/auth";
 
-import React, { createContext, useState, useEffect, ReactNode } from "react";
-import { getCurrentUser, isAuthenticated, logout } from "../api/auth";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface AuthContextType {
+type AuthContextType = {
+  isAuthenticated: boolean;
   user: User | null;
-  isLoggedIn: boolean;
   loading: boolean;
-  setUser: (user: User | null) => void;
-  setIsLoggedIn: (value: boolean) => void;
-  logout: () => void;
-}
+  logout: () => Promise<void>;
+};
 
-export const AuthContext = createContext<AuthContextType>({
+const AuthContext = createContext<AuthContextType>({
+  isAuthenticated: false,
   user: null,
-  isLoggedIn: false,
   loading: true,
-  setUser: () => {},
-  setIsLoggedIn: () => {},
-  logout: () => {},
+  logout: async () => {}
 });
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -46,7 +39,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         }
 
         // For local development with real backend
-        const userAuth = isAuthenticated();
+        const userAuth = checkAuth();
         if (userAuth) {
           const userData = getCurrentUser();
           setUser(userData);
@@ -67,26 +60,22 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => clearTimeout(timer);
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const logout = async () => {
+    await authLogout();
     setUser(null);
     setIsLoggedIn(false);
   };
 
   return (
-    <AuthContext.Provider
-      value={{
+    <AuthContext.Provider 
+      value={{ 
+        isAuthenticated: isLoggedIn, 
         user,
-        isLoggedIn,
         loading,
-        setUser,
-        setIsLoggedIn,
-        logout: handleLogout,
+        logout 
       }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = () => React.useContext(AuthContext);

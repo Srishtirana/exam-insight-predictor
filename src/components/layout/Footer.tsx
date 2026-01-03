@@ -1,8 +1,6 @@
-
-import { Link } from "react-router-dom";
-
 const Footer = () => {
   return (
+<<<<<<< HEAD
     <footer className="bg-gray-50 border-t py-8">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center">
@@ -51,6 +49,10 @@ const Footer = () => {
           <p>© {new Date().getFullYear()} QUIZYFY. All rights reserved.</p>
         </div>
       </div>
+=======
+    <footer className="w-full py-4 text-center text-sm text-gray-500">
+      © 2026 Exam Insight
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
     </footer>
   );
 };

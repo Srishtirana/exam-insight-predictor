@@ -3,17 +3,18 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { getUserStats, type UserStats } from "@/api/user";
+import { useAuth } from "../../contexts/AuthContext";
+import { getUserStats, getSimulatedUserStats, type UserStats } from "../../api/user";
+import { ExamParams } from "../../api/exam";
 import { useQuery } from "@tanstack/react-query";
-import MainLayout from "@/components/layout/MainLayout";
+import MainLayout from "../../components/layout/MainLayout";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../../components/ui/card";
 import {
   Form,
   FormControl,
@@ -21,18 +22,18 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "../../components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useToast } from "@/components/ui/use-toast";
+} from "../../components/ui/select";
+import { Button } from "../../components/ui/button";
+import { Input } from "../../components/ui/input";
+import { Skeleton } from "../../components/ui/skeleton";
+import { useToast } from "../../components/ui/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 // Form Schema
@@ -40,8 +41,7 @@ const formSchema = z.object({
   examType: z.string().min(1, { message: "Please select an exam type" }),
   subject: z.string().min(1, { message: "Please select a subject" }),
   difficulty: z.string().min(1, { message: "Please select a difficulty level" }),
-  numberOfQuestions: z
-    .number()
+  numberOfQuestions: z.number()
     .min(1, { message: "Minimum 1 question" })
     .max(15, { message: "Maximum 15 questions" }),
 });
@@ -71,14 +71,23 @@ interface AccuracyPieChartProps {
 // Components
 const StatCard = ({ title, value, description, icon }: StatCardProps) => (
   <Card>
+<<<<<<< HEAD
     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
       <CardTitle className="text-sm font-medium">{title}</CardTitle>
       {icon && <div className="h-4 w-4 text-muted-foreground">{icon}</div>}
+=======
+    <CardHeader className="pb-2">
+      <CardDescription>{title}</CardDescription>
+      <CardTitle className="text-3xl">
+        {icon} {value}
+      </CardTitle>
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
     </CardHeader>
-    <CardContent>
-      <div className="text-2xl font-bold">{value}</div>
-      <p className="text-xs text-muted-foreground">{description}</p>
-    </CardContent>
+    {description && (
+      <CardContent>
+        <p className="text-sm text-gray-500">{description}</p>
+      </CardContent>
+    )}
   </Card>
 );
 
@@ -187,25 +196,54 @@ const Dashboard = () => {
     retry: 1,
   });
 
+<<<<<<< HEAD
   // Handle form submission
+=======
+  // Handlers
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
   const handleStartExam = (values: z.infer<typeof formSchema>) => {
     sessionStorage.setItem("examParams", JSON.stringify(values));
     navigate("/exam");
   };
 
+<<<<<<< HEAD
   // Set recent activity from stats
   useEffect(() => {
     if (stats) {
+=======
+  // Effects
+  useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error Loading Dashboard",
+        description: "Could not load user statistics. Using simulated data instead.",
+      });
+      setRecentActivity([
+        { subject: 'Physics', score: 75, date: '2023-06-15' },
+        { subject: 'Chemistry', score: 82, date: '2023-06-10' },
+        { subject: 'Mathematics', score: 68, date: '2023-06-05' },
+      ]);
+    } else if (stats) {
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
       setRecentActivity(
         stats.examStats?.map(stat => ({
           subject: stat.subject,
           score: stat.averageScore,
+<<<<<<< HEAD
           date: new Date().toISOString().split('T')[0] // Use current date as fallback
+=======
+          date: new Date().toISOString().split('T')[0]
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
         })) || []
       );
     }
     setIsLoading(false);
+<<<<<<< HEAD
   }, [stats]);
+=======
+  }, [stats, error, toast]);
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
 
   // Show loading state while data is being fetched
   if (isLoading || !stats) {
@@ -226,6 +264,7 @@ const Dashboard = () => {
     );
   }
 
+<<<<<<< HEAD
   // Handle error state
   if (error) {
     toast({
@@ -238,6 +277,11 @@ const Dashboard = () => {
   return (
     <MainLayout requireAuth>
       <div className="container mx-auto px-4 py-8">
+=======
+  return (
+    <MainLayout requireAuth>
+      <div className="container mx-auto p-6">
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-exam-dark-purple mb-2">
@@ -437,5 +481,18 @@ const Dashboard = () => {
     </MainLayout>
   );
 };
+
+// AI Feature Card Component
+const AIFeatureCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => (
+  <Card className="hover:shadow-md transition-shadow">
+    <CardContent className="p-6">
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-2xl">{icon}</span>
+        <h3 className="text-lg font-semibold">{title}</h3>
+      </div>
+      <p className="text-gray-600">{description}</p>
+    </CardContent>
+  </Card>
+);
 
 export default Dashboard;

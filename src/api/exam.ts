@@ -56,6 +56,10 @@ export const startExam = async (
       message: `Using ${questions.length} demo questions for ${params.examType} ${params.subject}`
     };
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/start`, params, {
@@ -82,6 +86,10 @@ export const submitExam = async (
       aiFeedback: feedback
     };
   }
+<<<<<<< HEAD
+=======
+
+>>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/submit`, submission, {

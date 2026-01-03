@@ -1,10 +1,10 @@
 
 import { Link } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
+import { useAuth } from "../../contexts/AuthContext";
+import { Button } from "../ui/button";
 
 const Header = () => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   return (
     <header className="border-b shadow-sm">
@@ -20,7 +20,7 @@ const Header = () => {
           <Link to="/" className="text-gray-700 hover:text-exam-purple transition-colors">
             Home 🏠︎
           </Link>
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Link to="/dashboard" className="text-gray-700 hover:text-exam-purple transition-colors">
                 Dashboard ✈︎
@@ -41,10 +41,21 @@ const Header = () => {
           )}
         </nav>
 
-        {/* Mobile menu button - we'd implement a proper mobile menu in production */}
+        {/* Mobile menu button */}
         <button className="md:hidden">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            className="h-6 w-6" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path 
+              strokeLinecap="round" 
+              strokeLinejoin="round" 
+              strokeWidth={2} 
+              d="M4 6h16M4 12h16M4 18h16" 
+            />
           </svg>
         </button>
       </div>

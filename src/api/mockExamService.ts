@@ -1,73 +1,15 @@
 // Mock exam service for GitHub Pages deployment
+import { 
+  jeeQuestionBank, 
+  getJEEQuestions, 
+  getMixedJEEQuestions, 
+  getAllAvailableQuestions,
+  shuffleArray,
+  type JEEQuestion 
+} from './jeeQuestionBank';
+
+// Legacy NEET questions for backward compatibility
 export const mockQuestions = {
-  JEE: {
-    physics: [
-      {
-        id: "1",
-        questionText: "What is the SI unit of electric current?",
-        options: [
-          { id: 0, text: "Volt" },
-          { id: 1, text: "Ampere" },
-          { id: 2, text: "Ohm" },
-          { id: 3, text: "Watt" }
-        ],
-        correctAnswerIndex: 1,
-        subject: "physics",
-        examType: "JEE",
-        difficulty: "easy",
-        explanation: "Ampere is the SI unit of electric current."
-      },
-      {
-        id: "2",
-        questionText: "Which of the following is not a unit of energy?",
-        options: [
-          { id: 0, text: "Joule" },
-          { id: 1, text: "Calorie" },
-          { id: 2, text: "Electron-volt" },
-          { id: 3, text: "Newton" }
-        ],
-        correctAnswerIndex: 3,
-        subject: "physics",
-        examType: "JEE",
-        difficulty: "easy",
-        explanation: "Newton is a unit of force, not energy."
-      }
-    ],
-    chemistry: [
-      {
-        id: "3",
-        questionText: "What is the pH of pure water at 25°C?",
-        options: [
-          { id: 0, text: "0" },
-          { id: 1, text: "7" },
-          { id: 2, text: "14" },
-          { id: 3, text: "1" }
-        ],
-        correctAnswerIndex: 1,
-        subject: "chemistry",
-        examType: "JEE",
-        difficulty: "easy",
-        explanation: "Pure water has a pH of 7 at 25°C."
-      }
-    ],
-    mathematics: [
-      {
-        id: "4",
-        questionText: "What is the derivative of x²?",
-        options: [
-          { id: 0, text: "x" },
-          { id: 1, text: "2x" },
-          { id: 2, text: "x²" },
-          { id: 3, text: "2" }
-        ],
-        correctAnswerIndex: 1,
-        subject: "mathematics",
-        examType: "JEE",
-        difficulty: "easy",
-        explanation: "Using the power rule, the derivative of x² is 2x."
-      }
-    ]
-  },
   NEET: {
     biology: [
       {
@@ -90,8 +32,37 @@ export const mockQuestions = {
 };
 
 export const getMockQuestions = (examType: string, subject: string, difficulty: string, numberOfQuestions: number) => {
-  const questions = mockQuestions[examType as keyof typeof mockQuestions]?.[subject as keyof typeof mockQuestions[typeof examType]] || [];
-  return questions.slice(0, numberOfQuestions);
+  // Handle JEE questions with our comprehensive question bank
+  if (examType.toLowerCase() === 'jee') {
+    // If difficulty is "mixed" or not specified, get mixed questions
+    if (difficulty.toLowerCase() === 'mixed' || !difficulty) {
+      return getMixedJEEQuestions(subject, numberOfQuestions);
+    }
+    
+    // Get questions of specific difficulty
+    const questions = getJEEQuestions(subject, difficulty, numberOfQuestions);
+    
+    // If we don't have enough questions of the requested difficulty, 
+    // fill with questions from other difficulties
+    if (questions.length < numberOfQuestions) {
+      const allQuestions = getAllAvailableQuestions(subject);
+      const additionalQuestions = allQuestions
+        .filter(q => !questions.find(existing => existing.id === q.id))
+        .slice(0, numberOfQuestions - questions.length);
+      
+      return shuffleArray([...questions, ...additionalQuestions]);
+    }
+    
+    return questions;
+  }
+  
+  // Handle NEET and other exam types (legacy support)
+  const examQuestions = mockQuestions[examType as keyof typeof mockQuestions];
+  if (examQuestions && typeof examQuestions === 'object') {
+    const subjectQuestions = examQuestions[subject as keyof typeof examQuestions] || [];
+    return Array.isArray(subjectQuestions) ? subjectQuestions.slice(0, numberOfQuestions) : [];
+  }
+  return [];
 };
 
 export const getMockFeedback = (score: number, totalQuestions: number, examType: string, subject: string) => {

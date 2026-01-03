@@ -466,6 +466,7 @@ const Dashboard = () => {
                               <SelectItem value="easy">Easy</SelectItem>
                               <SelectItem value="medium">Medium</SelectItem>
                               <SelectItem value="hard">Hard</SelectItem>
+                              <SelectItem value="mixed">Mixed (Easy + Medium + Hard)</SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />

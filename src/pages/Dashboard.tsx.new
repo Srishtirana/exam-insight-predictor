@@ -163,6 +163,19 @@ const AccuracyPieChart = ({ accuracy }: AccuracyPieChartProps) => {
   );
 };
 
+// AI Feature Card Component
+const AIFeatureCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => (
+  <Card className="hover:shadow-md transition-shadow">
+    <CardContent className="p-6">
+      <div className="flex items-center gap-3 mb-3">
+        <span className="text-2xl">{icon}</span>
+        <h3 className="text-lg font-semibold">{title}</h3>
+      </div>
+      <p className="text-gray-600">{description}</p>
+    </CardContent>
+  </Card>
+);
+
 // Main Dashboard Component
 const Dashboard = () => {
   // Hooks
@@ -325,6 +338,30 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
+        {/* AI Features Section */}
+        <div className="mb-8">
+          <h2 className="text-xl font-semibold text-exam-dark-purple mb-4">
+            🤖 AI-Powered Features
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <AIFeatureCard
+              title="Smart Recommendations"
+              description="Get personalized question recommendations based on your performance"
+              icon="🔍"
+            />
+            <AIFeatureCard
+              title="Performance Analysis"
+              description="Detailed insights into your strengths and areas for improvement"
+              icon="📊"
+            />
+            <AIFeatureCard
+              title="Adaptive Learning"
+              description="Questions that adapt to your skill level in real-time"
+              icon="🎯"
+            />
+          </div>
+        </div>
+
         {/* Start New Exam Form */}
         <Card>
           <CardHeader>
@@ -447,18 +484,5 @@ const Dashboard = () => {
     </MainLayout>
   );
 };
-
-// AI Feature Card Component
-const AIFeatureCard = ({ title, description, icon }: { title: string; description: string; icon: string }) => (
-  <Card className="hover:shadow-md transition-shadow">
-    <CardContent className="p-6">
-      <div className="flex items-center gap-3 mb-3">
-        <span className="text-2xl">{icon}</span>
-        <h3 className="text-lg font-semibold">{title}</h3>
-      </div>
-      <p className="text-gray-600">{description}</p>
-    </CardContent>
-  </Card>
-);
 
 export default Dashboard;

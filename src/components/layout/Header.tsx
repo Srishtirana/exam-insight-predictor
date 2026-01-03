@@ -25,6 +25,9 @@ const Header = () => {
               <Link to="/dashboard" className="text-gray-700 hover:text-exam-purple transition-colors">
                 Dashboard✈︎
               </Link>
+              <Link to="/pyq-bank" className="text-gray-700 hover:text-exam-purple transition-colors">
+                PYQ Bank 📚
+              </Link>
               <Button variant="outline" onClick={logout}>
                 Log Out ⍈
               </Button>

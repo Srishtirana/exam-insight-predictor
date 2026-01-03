@@ -14,15 +14,9 @@ mongoose
     process.exit(1);
   });
 
-<<<<<<< HEAD
-// Sample questions
-const sampleQuestions = [
-  // Physics - JEE
-=======
 // Comprehensive question database with real exam questions
 const sampleQuestions = [
   // JEE Physics Questions - Easy Level
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   {
     questionText: "Which of these is not a unit of energy?",
     options: [
@@ -36,8 +30,6 @@ const sampleQuestions = [
     examType: "JEE",
     difficulty: "easy",
     topic: "Mechanics",
-<<<<<<< HEAD
-=======
     explanation: "Newton is a unit of force, not energy. Joule, calorie, and electron-volt are all units of energy."
   },
   {
@@ -174,7 +166,6 @@ const sampleQuestions = [
     difficulty: "easy",
     topic: "Waves",
     explanation: "Velocity v = fλ = 50 × 4 = 200 m/s."
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   },
   {
     questionText: "What is the SI unit of electric current?",
@@ -189,13 +180,6 @@ const sampleQuestions = [
     examType: "JEE",
     difficulty: "easy",
     topic: "Electricity",
-<<<<<<< HEAD
-  },
-
-  // Chemistry - JEE
-  {
-    questionText: "What is the pH of a neutral solution at 25°C?",
-=======
     explanation: "Ampere is the SI unit of electric current, named after André-Marie Ampère."
   },
   {
@@ -307,7 +291,6 @@ const sampleQuestions = [
   // JEE Chemistry Questions - Easy Level
   {
     questionText: "What is the pH of pure water at 25°C?",
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     options: [
       { id: 0, text: "0" },
       { id: 1, text: "7" },
@@ -319,11 +302,6 @@ const sampleQuestions = [
     examType: "JEE",
     difficulty: "easy",
     topic: "Acid-Base",
-<<<<<<< HEAD
-  },
-
-  // Mathematics - JEE
-=======
     explanation: "Pure water has a pH of 7 at 25°C, making it neutral."
   },
   {
@@ -376,90 +354,15 @@ const sampleQuestions = [
     options: [
       { id: 0, text: "H₂S" },
       { id: 1, text: "SO₂" },
-      { id: 2, text: "H₂SO₄" },
-      { id: 3, text: "FeSO₄" },
+      { id: 2, text: "HNO₃" },
+      { id: 3, text: "HI" }
     ],
     correctAnswerIndex: 2,
     subject: "chemistry",
     examType: "JEE",
     difficulty: "medium",
     topic: "Redox Reactions",
-    explanation: "H₂SO₄ is an oxidizing agent, not a reducing agent. The others can act as reducing agents."
-  },
-  {
-    questionText: "The IUPAC name of CH₃-CH₂-CH₂-OH is:",
-    options: [
-      { id: 0, text: "Ethanol" },
-      { id: 1, text: "Propanol" },
-      { id: 2, text: "Butanol" },
-      { id: 3, text: "Methanol" },
-    ],
-    correctAnswerIndex: 1,
-    subject: "chemistry",
-    examType: "JEE",
-    difficulty: "easy",
-    topic: "Nomenclature",
-    explanation: "CH₃-CH₂-CH₂-OH has 3 carbon atoms with an OH group, so it's propanol."
-  },
-  {
-    questionText: "What is the hybridization of carbon in methane (CH₄)?",
-    options: [
-      { id: 0, text: "sp" },
-      { id: 1, text: "sp²" },
-      { id: 2, text: "sp³" },
-      { id: 3, text: "sp³d" },
-    ],
-    correctAnswerIndex: 2,
-    subject: "chemistry",
-    examType: "JEE",
-    difficulty: "medium",
-    topic: "Chemical Bonding",
-    explanation: "Carbon in CH₄ forms 4 bonds, so it undergoes sp³ hybridization."
-  },
-  {
-    questionText: "Which of the following has the highest boiling point?",
-    options: [
-      { id: 0, text: "CH₄" },
-      { id: 1, text: "C₂H₆" },
-      { id: 2, text: "C₃H₈" },
-      { id: 3, text: "C₄H₁₀" },
-    ],
-    correctAnswerIndex: 3,
-    subject: "chemistry",
-    examType: "JEE",
-    difficulty: "easy",
-    topic: "States of Matter",
-    explanation: "Boiling point increases with molecular weight. C₄H₁₀ has the highest molecular weight."
-  },
-  {
-    questionText: "What is the product when ethene reacts with bromine water?",
-    options: [
-      { id: 0, text: "1,2-dibromoethane" },
-      { id: 1, text: "1,1-dibromoethane" },
-      { id: 2, text: "Bromoethane" },
-      { id: 3, text: "Ethyl bromide" },
-    ],
-    correctAnswerIndex: 0,
-    subject: "chemistry",
-    examType: "JEE",
-    difficulty: "medium",
-    topic: "Organic Reactions",
-    explanation: "Ethene undergoes addition reaction with bromine to form 1,2-dibromoethane."
-  },
-  {
-    questionText: "The number of moles in 44 g of CO₂ is:",
-    options: [
-      { id: 0, text: "0.5" },
-      { id: 1, text: "1" },
-      { id: 2, text: "2" },
-      { id: 3, text: "4" },
-    ],
-    correctAnswerIndex: 1,
-    subject: "chemistry",
-    examType: "JEE",
-    difficulty: "easy",
-    topic: "Mole Concept",
-    explanation: "Molar mass of CO₂ = 12 + 2(16) = 44 g/mol. So 44 g = 1 mole."
+    explanation: "HNO₃ is an oxidizing agent, not a reducing agent."
   },
   {
     questionText: "Which of the following is not a noble gas?",
@@ -467,7 +370,7 @@ const sampleQuestions = [
       { id: 0, text: "Helium" },
       { id: 1, text: "Neon" },
       { id: 2, text: "Chlorine" },
-      { id: 3, text: "Argon" },
+      { id: 3, text: "Argon" }
     ],
     correctAnswerIndex: 2,
     subject: "chemistry",
@@ -482,29 +385,14 @@ const sampleQuestions = [
       { id: 0, text: "Ionic" },
       { id: 1, text: "Covalent" },
       { id: 2, text: "Metallic" },
-      { id: 3, text: "Hydrogen" },
+      { id: 3, text: "Hydrogen" }
     ],
     correctAnswerIndex: 1,
     subject: "chemistry",
     examType: "JEE",
-    difficulty: "medium",
+    difficulty: "easy",
     topic: "Chemical Bonding",
-    explanation: "Covalent bonds are formed when atoms share electrons to achieve stability."
-  },
-  {
-    questionText: "Which of the following is not an alkali metal?",
-    options: [
-      { id: 0, text: "Sodium" },
-      { id: 1, text: "Potassium" },
-      { id: 2, text: "Calcium" },
-      { id: 3, text: "Lithium" },
-    ],
-    correctAnswerIndex: 2,
-    subject: "chemistry",
-    examType: "JEE",
-    difficulty: "medium",
-    topic: "Periodic Table",
-    explanation: "Calcium is an alkaline earth metal, not an alkali metal. Alkali metals include lithium, sodium, potassium, rubidium, cesium, and francium."
+    explanation: "A covalent bond is formed when atoms share electrons."
   },
   {
     questionText: "The process of converting a solid directly to gas is called:",
@@ -512,7 +400,7 @@ const sampleQuestions = [
       { id: 0, text: "Melting" },
       { id: 1, text: "Evaporation" },
       { id: 2, text: "Sublimation" },
-      { id: 3, text: "Condensation" },
+      { id: 3, text: "Condensation" }
     ],
     correctAnswerIndex: 2,
     subject: "chemistry",
@@ -521,27 +409,17 @@ const sampleQuestions = [
     topic: "States of Matter",
     explanation: "Sublimation is the process where a solid changes directly to gas without passing through the liquid phase."
   },
-
-  // JEE Mathematics Questions - Easy Level
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   {
     questionText: "What is the derivative of x²?",
     options: [
       { id: 0, text: "x" },
       { id: 1, text: "2x" },
       { id: 2, text: "x²" },
-      { id: 3, text: "2" },
+      { id: 3, text: "2" }
     ],
     correctAnswerIndex: 1,
     subject: "mathematics",
     examType: "JEE",
-<<<<<<< HEAD
-    difficulty: "medium",
-    topic: "Calculus",
-  },
-
-  // Biology - NEET
-=======
     difficulty: "easy",
     topic: "Calculus",
     explanation: "Using the power rule, the derivative of x² is 2x."
@@ -743,23 +621,18 @@ const sampleQuestions = [
   },
 
   // NEET Biology Questions - Easy Level
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   {
     questionText: "Which organelle is known as the 'powerhouse of the cell'?",
     options: [
       { id: 0, text: "Nucleus" },
       { id: 1, text: "Mitochondria" },
       { id: 2, text: "Ribosome" },
-      { id: 3, text: "Golgi apparatus" },
+      { id: 3, text: "Golgi apparatus" }
     ],
-    correctAnswerIndex: 1,
     subject: "biology",
     examType: "NEET",
     difficulty: "easy",
     topic: "Cell Biology",
-<<<<<<< HEAD
-  },
-=======
     explanation: "Mitochondria are called the powerhouse of the cell because they produce ATP through cellular respiration."
   },
   {
@@ -1398,7 +1271,6 @@ const sampleQuestions = [
     topic: "Modern History",
     explanation: "Vasco da Gama discovered the sea route to India around the Cape of Good Hope in 1498."
   }
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 ];
 
 // Function to seed database

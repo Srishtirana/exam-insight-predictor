@@ -22,28 +22,16 @@ const Footer = () => {
             <div className="mb-4 md:mb-0 text-center md:text-left">
               <h3 className="font-medium mb-2 text-exam-dark-purple">Quick Links</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-<<<<<<< HEAD
                 <li><Link to="/" className="hover:text-exam-purple transition-colors">Home🏠︎</Link></li>
                 <li><Link to="/auth" className="hover:text-exam-purple transition-colors">Sign Up✔</Link></li>
-=======
-                <li><Link to="/" className="hover:text-exam-purple transition-colors">Home</Link></li>
-                <li><Link to="/auth" className="hover:text-exam-purple transition-colors">Sign Up</Link></li>
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
               </ul>
             </div>
             
             <div className="text-center md:text-left">
-<<<<<<< HEAD
               <h3 className="font-medium mb-2 text-exam-dark-purple">Follow Us➤</h3>
               <div className="flex justify-center md:justify-start space-x-4 mt-2">
                 <a href="#" className="text-gray-400 hover:text-exam-purple transition-colors">
                   <span className="sr-only">Twitter𝕏</span>
-=======
-              <h3 className="font-medium mb-2 text-exam-dark-purple">Follow Us</h3>
-              <div className="flex justify-center md:justify-start space-x-4 mt-2">
-                <a href="#" className="text-gray-400 hover:text-exam-purple transition-colors">
-                  <span className="sr-only">Twitter</span>
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
                   <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"></path>
                   </svg>
@@ -60,11 +48,7 @@ const Footer = () => {
         </div>
         
         <div className="mt-8 border-t pt-6 text-center text-sm text-gray-500">
-<<<<<<< HEAD
           <p>© {new Date().getFullYear()} QUIZYFY. All rights reserved.</p>
-=======
-          <p>© {new Date().getFullYear()} Exam Prediction. All rights reserved.</p>
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
         </div>
       </div>
     </footer>

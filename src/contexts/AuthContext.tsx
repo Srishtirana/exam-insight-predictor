@@ -33,19 +33,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const initAuth = () => {
-<<<<<<< HEAD
-      const userAuth = isAuthenticated();
-      if (userAuth) {
-        const userData = getCurrentUser();
-        setUser(userData);
-        setIsLoggedIn(true);
-      }
-      setLoading(false);
-    };
-
-    initAuth();
-=======
       try {
+        // For GitHub Pages, we'll use mock data
+        if (window.location.hostname === 'srishirana.github.io') {
+          const mockUser = localStorage.getItem('user');
+          if (mockUser) {
+            setUser(JSON.parse(mockUser));
+            setIsLoggedIn(true);
+          }
+          setLoading(false);
+          return;
+        }
+
+        // For local development with real backend
         const userAuth = isAuthenticated();
         if (userAuth) {
           const userData = getCurrentUser();
@@ -60,8 +60,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
 
     // Use setTimeout to ensure the app renders first
-    setTimeout(initAuth, 0);
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
+    const timer = setTimeout(() => {
+      initAuth();
+    }, 0);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const handleLogout = () => {

@@ -8,7 +8,6 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Exam from "./pages/Exam";
-import PYQBank from "./pages/PYQBank";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,7 +27,6 @@ const App = () => {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/exam" element={<Exam />} />
-                <Route path="/pyq-bank" element={<PYQBank />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </HashRouter>

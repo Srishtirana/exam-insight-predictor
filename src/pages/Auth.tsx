@@ -102,20 +102,20 @@ const Auth = () => {
     try {
       // Explicitly define the values as SignupData to match the required type
       const userData: SignupData = {
-        name: values.name,
-        email: values.email,
+        name: values.name.trim(), // Trim whitespace from name
+        email: values.email.toLowerCase().trim(), // Normalize email
         password: values.password,
       };
 
       const response = await signup(userData);
 
-      // Update auth context
+      // Update auth context with the new user data
       setUser(response.user);
       setIsLoggedIn(true);
 
       toast({
         title: "Account Created",
-        description: "Welcome to Exam Prediction!",
+        description: `Welcome to Exam Prediction, ${response.user.name}!`,
       });
 
       // Redirect to dashboard

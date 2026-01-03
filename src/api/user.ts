@@ -1,15 +1,10 @@
-/* eslint-disable */
 import axios from "axios";
-<<<<<<< HEAD
-
-const API_URL = "http://localhost:5000/api";
-=======
 import { API_URL, isBackendAvailable } from "../config/api";
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 
 export interface UserStats {
   totalAttempts: number;
   accuracy: number;
+  streakDays: number;
   lastExamDetails?: {
     subject: string;
     score: number;
@@ -23,41 +18,43 @@ export interface UserStats {
 }
 
 export const getUserStats = async (): Promise<UserStats> => {
-<<<<<<< HEAD
-=======
   if (!isBackendAvailable()) {
     // Return mock stats for GitHub Pages
     return getSimulatedUserStats();
   }
 
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get(`${API_URL}/user/dashboard`, {
+    const response = await axios.get(`${API_URL}/user/stats`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data.data;
+    return response.data;
   } catch (error) {
+    console.error('Error fetching user stats:', error);
     throw error;
   }
 };
 
-// For fallback or testing purposes
-export const getSimulatedUserStats = (): UserStats => {
+// Mock data generation for GitHub Pages
+const getSimulatedUserStats = (): UserStats => {
+  const subjects = ['Physics', 'Chemistry', 'Mathematics', 'Biology'];
+  const examStats = subjects.map(subject => ({
+    subject,
+    attempts: Math.floor(Math.random() * 10) + 1,
+    averageScore: Math.floor(Math.random() * 30) + 70, // Between 70-100
+  }));
+
   return {
-    totalAttempts: 15,
-    accuracy: 68,
+    totalAttempts: examStats.reduce((sum, stat) => sum + stat.attempts, 0),
+    accuracy: Math.floor(Math.random() * 30) + 70, // Between 70-100
+    streakDays: Math.floor(Math.random() * 30), // Random streak between 0-29 days
     lastExamDetails: {
-      subject: "Physics",
-      score: 75,
-      date: new Date().toDateString(),
+      subject: subjects[Math.floor(Math.random() * subjects.length)],
+      score: Math.floor(Math.random() * 30) + 70,
+      date: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toISOString(),
     },
-    examStats: [
-      { subject: "Physics", attempts: 5, averageScore: 72 },
-      { subject: "Chemistry", attempts: 4, averageScore: 68 },
-      { subject: "Mathematics", attempts: 6, averageScore: 81 },
-    ],
+    examStats,
   };
 };

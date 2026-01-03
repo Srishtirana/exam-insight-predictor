@@ -1,12 +1,6 @@
-/* eslint-disable */
 import axios from "axios";
-<<<<<<< HEAD
-
-const API_URL = "http://localhost:5000/api";
-=======
 import { API_URL, isBackendAvailable } from "../config/api";
 import { getMockQuestions, getMockFeedback } from "./mockExamService";
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 
 export interface ExamParams {
   examType: string;
@@ -43,13 +37,9 @@ export interface ExamResult {
   questions: (Question & { selectedAnswer: number | null })[];
 }
 
-<<<<<<< HEAD
-export const startExam = async (
-  params: ExamParams
-): Promise<{ examId: string; questions: Question[] }> => {
-=======
 export interface ExamFeedbackResponse {
   feedback: string;
+  areasForImprovement?: string[];
 }
 
 export const startExam = async (
@@ -66,8 +56,6 @@ export const startExam = async (
       message: `Using ${questions.length} demo questions for ${params.examType} ${params.subject}`
     };
   }
-
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/start`, params, {
@@ -83,9 +71,6 @@ export const startExam = async (
 
 export const submitExam = async (
   submission: ExamSubmission
-<<<<<<< HEAD
-): Promise<ExamResult> => {
-=======
 ): Promise<ExamResult & { aiFeedback?: string }> => {
   if (!isBackendAvailable()) {
     // Use mock submission for GitHub Pages
@@ -97,8 +82,6 @@ export const submitExam = async (
       aiFeedback: feedback
     };
   }
-
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/submit`, submission, {
@@ -106,11 +89,7 @@ export const submitExam = async (
         Authorization: `Bearer ${token}`,
       },
     });
-<<<<<<< HEAD
-    return response.data.result;
-=======
     return response.data;
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   } catch (error) {
     throw error;
   }
@@ -340,25 +319,33 @@ export const simulateExamSubmission = (
     questions: questionsWithAnswers,
   };
 };
-<<<<<<< HEAD
-=======
 
 export const analyzeAttempt = async (
   examId: string
-): Promise<ExamFeedbackResponse> => {
+): Promise<{ feedback: string; areasForImprovement: string[] }> => {
+  if (!isBackendAvailable()) {
+    // Return mock feedback if backend is not available
+    const mockFeedback = getMockFeedback(0, 0, 'JEE', 'physics');
+    return {
+      feedback: mockFeedback,
+      areasForImprovement: [
+        'Focus on practicing more problems in weak areas',
+        'Review fundamental concepts',
+        'Improve time management during exams'
+      ]
+    };
+  }
+
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.post(
-      `${API_URL}/exam/analyze`,
-      { examId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await axios.get(`${API_URL}/exams/analyze/${examId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return response.data;
   } catch (error) {
+    console.error('Error analyzing attempt:', error);
     throw error;
   }
 };
@@ -381,4 +368,3 @@ export const getAIFeedback = async (
     throw error;
   }
 };
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf

@@ -1,18 +1,26 @@
 // API Configuration for different environments
 const getApiUrl = () => {
   // Check if we're in production (GitHub Pages)
-  if (window.location.hostname === 'srishtirana.github.io') {
-    // For GitHub Pages, we'll use a mock API or disable backend features
-    return null; // No backend API available on GitHub Pages
+  if (window.location.hostname === 'srishirana.github.io') {
+    return null; // Use mock data on GitHub Pages
   }
   
-  // Development environment
-  return "http://localhost:5000/api";
+  // For local development, you can set this to your local backend URL
+  // return "http://localhost:5000/api";
+  
+  // Default to mock data
+  return null;
 };
 
 export const API_URL = getApiUrl();
 
 // Check if backend is available
 export const isBackendAvailable = () => {
-  return API_URL !== null;
+  // For GitHub Pages, always use mock data
+  if (window.location.hostname === 'srishirana.github.io') {
+    return false;
+  }
+  
+  // For local development, you can enable/disable mock data here
+  return false; // Set to true to use real backend when available
 };

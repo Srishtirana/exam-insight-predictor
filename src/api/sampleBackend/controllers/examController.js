@@ -1,17 +1,12 @@
 const Question = require("../models/Question");
 const Attempt = require("../models/Attempt");
 const User = require("../models/User");
-<<<<<<< HEAD
-=======
 const AIQuestionService = require("../services/aiQuestionService");
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 
 // Start a new exam
 exports.startExam = async (req, res) => {
   try {
     const { examType, subject, difficulty, numberOfQuestions } = req.body;
-    console.log("🚀 ~ exports.startExam= ~ req:", req.body);
-    ``;
     const userId = req.user.id;
 
     if (!examType || !subject || !difficulty || !numberOfQuestions) {
@@ -21,83 +16,29 @@ exports.startExam = async (req, res) => {
       });
     }
 
-<<<<<<< HEAD
-    // Find questions matching the criteria
-    let questions = await Question.aggregate([
-      {
-        $match: {
-          examType: examType,
-          subject: subject,
-          difficulty: difficulty.toLowerCase(),
-        },
-      },
-      { $sample: { size: parseInt(numberOfQuestions) } },
-    ]);
-
-    // If not enough questions in DB, generate some placeholder questions
-    if (questions.length < numberOfQuestions) {
-      const placeholderCount = numberOfQuestions - questions.length;
-
-      // Topics by subject (example)
-      const topics = {
-        Physics: ["Mechanics", "Thermodynamics", "Optics", "Electromagnetism"],
-        Chemistry: [
-          "Organic Chemistry",
-          "Inorganic Chemistry",
-          "Physical Chemistry",
-        ],
-        Biology: ["Cell Biology", "Genetics", "Anatomy", "Ecology"],
-        Mathematics: ["Algebra", "Calculus", "Geometry", "Probability"],
-      };
-
-      const subjectTopics = topics[subject] || ["General"];
-
-      // Generate placeholder questions
-      for (let i = 0; i < placeholderCount; i++) {
-        const topic =
-          subjectTopics[Math.floor(Math.random() * subjectTopics.length)];
-        const options = [
-          { id: 0, text: `Option A for question ${i + 1}` },
-          { id: 1, text: `Option B for question ${i + 1}` },
-          { id: 2, text: `Option C for question ${i + 1}` },
-          { id: 3, text: `Option D for question ${i + 1}` },
-        ];
-
-        const question = new Question({
-          questionText: `Sample ${subject} question ${i + 1} about ${topic}?`,
-          options,
-          correctAnswerIndex: Math.floor(Math.random() * 4),
-          subject,
-          examType,
-          difficulty,
-          topic,
-        });
-
-        await question.save();
-        questions.push(question);
-      }
-=======
     // Try to generate AI questions first
     let questions = [];
     let aiQuestionsGenerated = false;
 
     try {
-      console.log(`🤖 Generating AI questions for ${examType} ${subject} ${difficulty}...`);
-      const aiQuestions = await AIQuestionService.generateQuestions(
-        examType,
-        subject,
-        difficulty.toLowerCase(),
-        parseInt(numberOfQuestions)
-      );
-      
-      // Save AI-generated questions to database
-      for (const aiQuestion of aiQuestions) {
-        const question = new Question(aiQuestion);
-        await question.save();
-        questions.push(question);
+      if (AIQuestionService) {
+        console.log(`🤖 Generating AI questions for ${examType} ${subject} ${difficulty}...`);
+        const aiQuestions = await AIQuestionService.generateQuestions(
+          examType,
+          subject,
+          difficulty.toLowerCase(),
+          parseInt(numberOfQuestions)
+        );
+        
+        // Save AI-generated questions to database
+        for (const aiQuestion of aiQuestions) {
+          const question = new Question(aiQuestion);
+          await question.save();
+          questions.push(question);
+        }
+        aiQuestionsGenerated = true;
+        console.log(`✅ Generated ${aiQuestions.length} AI questions`);
       }
-      aiQuestionsGenerated = true;
-      console.log(`✅ Generated ${aiQuestions.length} AI questions`);
     } catch (aiError) {
       console.log('⚠️ AI question generation failed, falling back to database:', aiError.message);
       
@@ -153,7 +94,6 @@ exports.startExam = async (req, res) => {
           }
         }
       }
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     }
 
     // Create exam attempt record
@@ -187,13 +127,10 @@ exports.startExam = async (req, res) => {
       success: true,
       examId: attempt._id,
       questions: formattedQuestions,
-<<<<<<< HEAD
-=======
       aiGenerated: aiQuestionsGenerated,
       message: aiQuestionsGenerated 
         ? `Generated ${questions.length} AI-powered questions for ${examType} ${subject}` 
         : `Using ${questions.length} questions from question bank`,
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     });
   } catch (error) {
     console.error("Start exam error:", error);
@@ -211,33 +148,20 @@ exports.submitExam = async (req, res) => {
     const { examId, answers } = req.body;
     const userId = req.user.id;
 
-<<<<<<< HEAD
-    // Validate request
-    if (!examId || !answers || !Array.isArray(answers)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid submission format",
-=======
     if (!examId || !answers || !Array.isArray(answers)) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields",
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       });
     }
 
     // Find the attempt
-<<<<<<< HEAD
     const attempt = await Attempt.findOne({
       _id: examId,
       user: userId,
-    });
+    }).populate('user');
 
-    if (!attempt) {
-=======
-    const attempt = await Attempt.findById(examId).populate('user');
     if (!attempt || attempt.user._id.toString() !== userId) {
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       return res.status(404).json({
         success: false,
         message: "Exam attempt not found",
@@ -246,7 +170,6 @@ exports.submitExam = async (req, res) => {
 
     // Calculate score
     let correctAnswers = 0;
-<<<<<<< HEAD
     const questionsWithAnswers = attempt.questions.map((question) => {
       const userAnswer = answers.find(
         (a) => a.questionId === question.questionId.toString()
@@ -260,6 +183,7 @@ exports.submitExam = async (req, res) => {
       return {
         ...question.toObject(),
         selectedAnswer,
+        isCorrect,
       };
     });
 
@@ -267,6 +191,7 @@ exports.submitExam = async (req, res) => {
     attempt.questions = questionsWithAnswers;
     attempt.score = correctAnswers;
     attempt.completedAt = new Date();
+    attempt.status = 'completed';
     await attempt.save();
 
     // Update user's exam history
@@ -284,77 +209,26 @@ exports.submitExam = async (req, res) => {
       },
     });
 
+    // Calculate score percentage
+    const scorePercentage = Math.round((correctAnswers / attempt.totalQuestions) * 100);
+
     // Prepare result for frontend
     const result = {
-      score: Math.round((correctAnswers / attempt.totalQuestions) * 100),
+      score: scorePercentage,
       totalQuestions: attempt.totalQuestions,
       correctAnswers,
       incorrectAnswers: attempt.totalQuestions - correctAnswers,
       questions: questionsWithAnswers,
+      examType: attempt.examType,
+      subject: attempt.subject,
+      difficulty: attempt.difficulty,
+      completedAt: attempt.completedAt,
     };
 
     res.json({
       success: true,
-      result,
-=======
-    const questionsWithAnswers = attempt.questions.map((question, index) => {
-      const userAnswer = answers.find(a => a.questionId === question.questionId.toString());
-      const isCorrect = userAnswer && userAnswer.selectedAnswer === question.correctAnswerIndex;
-      
-      if (isCorrect) {
-        correctAnswers++;
-      }
-
-      return {
-        id: question.questionId.toString(),
-        questionText: question.questionText,
-        options: question.options,
-        correctAnswerIndex: question.correctAnswerIndex,
-        selectedAnswer: userAnswer ? userAnswer.selectedAnswer : null,
-        isCorrect: isCorrect
-      };
-    });
-
-    const score = Math.round((correctAnswers / attempt.totalQuestions) * 100);
-
-    // Update attempt with results
-    attempt.score = score;
-    attempt.completedAt = new Date();
-    attempt.questions = attempt.questions.map((question, index) => {
-      const userAnswer = answers.find(a => a.questionId === question.questionId.toString());
-      return {
-        ...question.toObject(),
-        selectedAnswer: userAnswer ? userAnswer.selectedAnswer : null
-      };
-    });
-
-    await attempt.save();
-
-    // Generate AI feedback
-    let aiFeedback = null;
-    try {
-      aiFeedback = await AIQuestionService.analyzePerformance({
-        examType: attempt.examType,
-        subject: attempt.subject,
-        difficulty: attempt.difficulty,
-        score: correctAnswers,
-        totalQuestions: attempt.totalQuestions,
-        questions: questionsWithAnswers,
-        answers: answers
-      });
-    } catch (aiError) {
-      console.log('AI feedback generation failed:', aiError.message);
-    }
-
-    res.json({
-      success: true,
-      score: score,
-      correctAnswers: correctAnswers,
-      totalQuestions: attempt.totalQuestions,
-      questions: questionsWithAnswers,
-      aiFeedback: aiFeedback,
-      message: `Exam completed! You scored ${score}%`
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
+      message: "Exam submitted successfully",
+      ...result,
     });
   } catch (error) {
     console.error("Submit exam error:", error);
@@ -365,8 +239,6 @@ exports.submitExam = async (req, res) => {
     });
   }
 };
-<<<<<<< HEAD
-=======
 
 // Get AI feedback for an attempt
 exports.getAIFeedback = async (req, res) => {
@@ -374,89 +246,162 @@ exports.getAIFeedback = async (req, res) => {
     const { examId } = req.params;
     const userId = req.user.id;
 
-    const attempt = await Attempt.findById(examId).populate('user');
-    if (!attempt || attempt.user._id.toString() !== userId) {
+    // Find the attempt
+    const attempt = await Attempt.findOne({
+      _id: examId,
+      user: userId,
+    });
+
+    if (!attempt) {
       return res.status(404).json({
         success: false,
         message: "Exam attempt not found",
       });
     }
 
-    if (!attempt.completedAt) {
-      return res.status(400).json({
-        success: false,
-        message: "Exam not completed yet",
+    // Check if AI feedback is already generated
+    if (attempt.aiFeedback) {
+      return res.json({
+        success: true,
+        feedback: attempt.aiFeedback,
       });
     }
 
     // Generate AI feedback
-    const aiFeedback = await AIQuestionService.analyzePerformance({
-      examType: attempt.examType,
-      subject: attempt.subject,
-      difficulty: attempt.difficulty,
-      score: attempt.score,
-      totalQuestions: attempt.totalQuestions,
-      questions: attempt.questions,
-      answers: attempt.questions.map(q => ({
-        questionId: q.questionId.toString(),
-        selectedAnswer: q.selectedAnswer
-      }))
-    });
+    const feedback = await AIQuestionService.generateFeedback(attempt);
+    
+    // Save feedback to the attempt
+    attempt.aiFeedback = feedback;
+    await attempt.save();
 
     res.json({
       success: true,
-      feedback: aiFeedback
+      feedback,
     });
   } catch (error) {
     console.error("Get AI feedback error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error getting AI feedback",
+      message: "Error generating AI feedback",
       error: process.env.NODE_ENV === "development" ? error.message : {},
     });
   }
 };
 
-// Analyze exam attempt (alias for getAIFeedback)
-exports.analyzeAttempt = exports.getAIFeedback;
+// Analyze exam attempt
+exports.analyzeAttempt = async (req, res) => {
+  try {
+    const { examId } = req.body;
+    const userId = req.user.id;
+
+    // Find the attempt
+    const attempt = await Attempt.findOne({
+      _id: examId,
+      user: userId,
+    }).populate('questions.question');
+
+    if (!attempt) {
+      return res.status(404).json({
+        success: false,
+        message: 'Exam attempt not found',
+      });
+    }
+
+    // Calculate performance metrics
+    const totalQuestions = attempt.questions.length;
+    const correctAnswers = attempt.questions.filter(
+      q => q.selectedAnswer === q.question.correctAnswerIndex
+    ).length;
+    const score = Math.round((correctAnswers / totalQuestions) * 100);
+
+    // Generate feedback
+    const feedback = {
+      score,
+      totalQuestions,
+      correctAnswers,
+      incorrectAnswers: totalQuestions - correctAnswers,
+      performance: score >= 70 ? 'Good' : score >= 40 ? 'Average' : 'Needs Improvement',
+      topicAnalysis: {},
+      suggestions: []
+    };
+
+    // Basic topic analysis (can be enhanced)
+    const topics = {};
+    attempt.questions.forEach(q => {
+      const topic = q.question.topic || 'General';
+      if (!topics[topic]) {
+        topics[topic] = { correct: 0, total: 0 };
+      }
+      topics[topic].total++;
+      if (q.selectedAnswer === q.question.correctAnswerIndex) {
+        topics[topic].correct++;
+      }
+    });
+
+    // Calculate topic-wise performance
+    for (const [topic, data] of Object.entries(topics)) {
+      const accuracy = Math.round((data.correct / data.total) * 100);
+      feedback.topicAnalysis[topic] = {
+        accuracy,
+        strength: accuracy >= 70,
+        weak: accuracy < 50,
+      };
+
+      if (accuracy < 50) {
+        feedback.suggestions.push(`Focus more on ${topic} (${accuracy}% accuracy)`);
+      }
+    }
+
+    if (feedback.suggestions.length === 0) {
+      feedback.suggestions.push('Good overall performance! Keep practicing to maintain your score.');
+    } else {
+      feedback.suggestions.unshift('Here are some areas to focus on:');
+    }
+
+    res.status(200).json({
+      success: true,
+      data: feedback,
+    });
+  } catch (error) {
+    console.error('Error analyzing attempt:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error analyzing exam attempt',
+      error: error.message,
+    });
+  }
+};
 
 // Test AI question generation
 exports.testAIQuestions = async (req, res) => {
   try {
-    const { examType, subject, difficulty, numberOfQuestions } = req.body;
+    const { examType, subject, difficulty, count = 2 } = req.body;
     
-    if (!examType || !subject || !difficulty || !numberOfQuestions) {
+    if (!examType || !subject || !difficulty) {
       return res.status(400).json({
         success: false,
-        message: "Missing required fields: examType, subject, difficulty, numberOfQuestions"
+        message: "Missing required fields: examType, subject, difficulty",
       });
     }
 
-    console.log(`🧪 Testing AI question generation for ${examType} ${subject} ${difficulty}...`);
-    
     const questions = await AIQuestionService.generateQuestions(
       examType,
       subject,
       difficulty.toLowerCase(),
-      parseInt(numberOfQuestions)
+      parseInt(count)
     );
 
     res.json({
       success: true,
-      message: `Generated ${questions.length} test questions`,
-      questions: questions,
-      examType,
-      subject,
-      difficulty,
-      numberOfQuestions: parseInt(numberOfQuestions)
+      count: questions.length,
+      questions,
     });
   } catch (error) {
     console.error("Test AI questions error:", error);
     res.status(500).json({
       success: false,
-      message: "Server error testing AI questions",
+      message: "Error generating test questions",
       error: process.env.NODE_ENV === "development" ? error.message : {},
     });
   }
 };
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf

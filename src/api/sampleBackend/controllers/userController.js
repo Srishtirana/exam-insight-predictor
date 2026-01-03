@@ -1,220 +1,5 @@
-
 const User = require('../models/User');
 const Attempt = require('../models/Attempt');
-
-// Get user dashboard stats
-exports.getDashboardStats = async (req, res) => {
-  try {
-    const userId = req.user.id;
-
-    // Get user's exam attempts
-    const attempts = await Attempt.find({ user: userId }).sort({ createdAt: -1 });
-    
-<<<<<<< HEAD
-    // Calculate stats
-    let totalAttempts = attempts.length;
-    let totalCorrect = 0;
-    let totalQuestions = 0;
-    
-    attempts.forEach(attempt => {
-      totalCorrect += attempt.score;
-      totalQuestions += attempt.totalQuestions;
-=======
-    // Calculate basic stats
-    let totalAttempts = attempts.length;
-    let totalCorrect = 0;
-    let totalQuestions = 0;
-    let completedAttempts = 0;
-    
-    attempts.forEach(attempt => {
-      if (attempt.completedAt) {
-        completedAttempts++;
-        totalCorrect += attempt.score;
-        totalQuestions += attempt.totalQuestions;
-      }
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
-    });
-    
-    // Calculate accuracy
-    const accuracy = totalQuestions > 0 
-      ? Math.round((totalCorrect / totalQuestions) * 100) 
-      : 0;
-    
-    // Get last exam attempt details
-<<<<<<< HEAD
-    const lastExam = attempts.length > 0 ? attempts[0] : null;
-=======
-    const lastExam = attempts.find(attempt => attempt.completedAt) || null;
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
-    
-    let lastExamDetails = null;
-    if (lastExam) {
-      lastExamDetails = {
-        subject: lastExam.subject,
-<<<<<<< HEAD
-        score: Math.round((lastExam.score / lastExam.totalQuestions) * 100),
-        date: lastExam.createdAt.toDateString()
-=======
-        examType: lastExam.examType,
-        difficulty: lastExam.difficulty,
-        score: Math.round((lastExam.score / lastExam.totalQuestions) * 100),
-        date: lastExam.completedAt.toDateString()
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
-      };
-    }
-    
-    // Calculate subject-specific stats
-    const subjectStats = {};
-<<<<<<< HEAD
-    attempts.forEach(attempt => {
-=======
-    const examTypeStats = {};
-    const difficultyStats = {};
-    
-    attempts.forEach(attempt => {
-      if (!attempt.completedAt) return;
-      
-      // Subject stats
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
-      if (!subjectStats[attempt.subject]) {
-        subjectStats[attempt.subject] = {
-          subject: attempt.subject,
-          attempts: 0,
-          totalScore: 0,
-<<<<<<< HEAD
-          totalQuestions: 0
-=======
-          totalQuestions: 0,
-          bestScore: 0
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
-        };
-      }
-      
-      subjectStats[attempt.subject].attempts += 1;
-      subjectStats[attempt.subject].totalScore += attempt.score;
-      subjectStats[attempt.subject].totalQuestions += attempt.totalQuestions;
-<<<<<<< HEAD
-    });
-    
-    // Format subject stats for response
-=======
-      const currentScore = Math.round((attempt.score / attempt.totalQuestions) * 100);
-      if (currentScore > subjectStats[attempt.subject].bestScore) {
-        subjectStats[attempt.subject].bestScore = currentScore;
-      }
-      
-      // Exam type stats
-      if (!examTypeStats[attempt.examType]) {
-        examTypeStats[attempt.examType] = {
-          examType: attempt.examType,
-          attempts: 0,
-          totalScore: 0,
-          totalQuestions: 0
-        };
-      }
-      
-      examTypeStats[attempt.examType].attempts += 1;
-      examTypeStats[attempt.examType].totalScore += attempt.score;
-      examTypeStats[attempt.examType].totalQuestions += attempt.totalQuestions;
-      
-      // Difficulty stats
-      if (!difficultyStats[attempt.difficulty]) {
-        difficultyStats[attempt.difficulty] = {
-          difficulty: attempt.difficulty,
-          attempts: 0,
-          totalScore: 0,
-          totalQuestions: 0
-        };
-      }
-      
-      difficultyStats[attempt.difficulty].attempts += 1;
-      difficultyStats[attempt.difficulty].totalScore += attempt.score;
-      difficultyStats[attempt.difficulty].totalQuestions += attempt.totalQuestions;
-    });
-    
-    // Format stats for response
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
-    const examStats = Object.values(subjectStats).map(stat => ({
-      subject: stat.subject,
-      attempts: stat.attempts,
-      averageScore: stat.totalQuestions > 0 
-        ? Math.round((stat.totalScore / stat.totalQuestions) * 100) 
-<<<<<<< HEAD
-        : 0
-    }));
-    
-    res.json({
-      success: true,
-      data: {
-        totalAttempts,
-        accuracy,
-        lastExamDetails,
-        examStats
-=======
-        : 0,
-      bestScore: stat.bestScore
-    }));
-    
-    const examTypeStatsFormatted = Object.values(examTypeStats).map(stat => ({
-      examType: stat.examType,
-      attempts: stat.attempts,
-      averageScore: stat.totalQuestions > 0 
-        ? Math.round((stat.totalScore / stat.totalQuestions) * 100) 
-        : 0
-    }));
-    
-    const difficultyStatsFormatted = Object.values(difficultyStats).map(stat => ({
-      difficulty: stat.difficulty,
-      attempts: stat.attempts,
-      averageScore: stat.totalQuestions > 0 
-        ? Math.round((stat.totalScore / stat.totalQuestions) * 100) 
-        : 0
-    }));
-    
-    // Calculate performance trends (last 7 attempts)
-    const recentAttempts = attempts
-      .filter(attempt => attempt.completedAt)
-      .slice(0, 7)
-      .map(attempt => ({
-        date: attempt.completedAt.toISOString().split('T')[0],
-        score: Math.round((attempt.score / attempt.totalQuestions) * 100),
-        subject: attempt.subject,
-        examType: attempt.examType
-      }))
-      .reverse();
-    
-    // Calculate study streak (consecutive days with completed exams)
-    const studyStreak = calculateStudyStreak(attempts.filter(attempt => attempt.completedAt));
-    
-    // Get performance insights
-    const insights = generatePerformanceInsights(examStats, accuracy, totalAttempts);
-    
-    res.json({
-      success: true,
-      data: {
-        totalAttempts: completedAttempts,
-        accuracy,
-        lastExamDetails,
-        examStats,
-        examTypeStats: examTypeStatsFormatted,
-        difficultyStats: difficultyStatsFormatted,
-        recentAttempts,
-        studyStreak,
-        insights
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
-      }
-    });
-  } catch (error) {
-    console.error('Dashboard stats error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error retrieving dashboard stats',
-      error: process.env.NODE_ENV === 'development' ? error.message : {}
-    });
-  }
-};
-<<<<<<< HEAD
-=======
 
 // Helper function to calculate study streak
 function calculateStudyStreak(completedAttempts) {
@@ -244,6 +29,69 @@ function calculateStudyStreak(completedAttempts) {
   
   return streak;
 }
+
+// Get user dashboard statistics
+exports.getDashboardStats = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    // Get user's completed attempts
+    const attempts = await Attempt.find({
+      user: userId,
+      status: 'completed'
+    }).sort({ completedAt: -1 });
+
+    // Calculate basic stats
+    const totalAttempts = attempts.length;
+    const totalQuestions = attempts.reduce((sum, attempt) => sum + attempt.questions.length, 0);
+    const correctAnswers = attempts.reduce((sum, attempt) => {
+      return sum + attempt.questions.filter(q => q.isCorrect).length;
+    }, 0);
+    const accuracy = totalQuestions > 0 ? Math.round((correctAnswers / totalQuestions) * 100) : 0;
+    const streak = calculateStudyStreak(attempts);
+
+    // Get performance by subject
+    const subjectStats = {};
+    attempts.forEach(attempt => {
+      const subject = attempt.subject;
+      if (!subjectStats[subject]) {
+        subjectStats[subject] = { correct: 0, total: 0 };
+      }
+      subjectStats[subject].correct += attempt.questions.filter(q => q.isCorrect).length;
+      subjectStats[subject].total += attempt.questions.length;
+    });
+
+    // Format subject stats
+    const performanceBySubject = Object.entries(subjectStats).map(([subject, stats]) => ({
+      subject,
+      accuracy: Math.round((stats.correct / stats.total) * 100) || 0,
+      totalQuestions: stats.total
+    }));
+
+    // Generate insights
+    const insights = generatePerformanceInsights(performanceBySubject, accuracy, totalAttempts);
+
+    res.json({
+      success: true,
+      stats: {
+        totalAttempts,
+        totalQuestions,
+        correctAnswers,
+        accuracy,
+        streak,
+        performanceBySubject,
+        insights
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching dashboard data',
+      error: process.env.NODE_ENV === 'development' ? error.message : {}
+    });
+  }
+};
 
 // Helper function to generate performance insights
 function generatePerformanceInsights(examStats, accuracy, totalAttempts) {
@@ -280,4 +128,3 @@ function generatePerformanceInsights(examStats, accuracy, totalAttempts) {
   
   return insights;
 }
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf

@@ -1,11 +1,6 @@
 /* eslint-disable */
 import axios from "axios";
-<<<<<<< HEAD
-
-const API_URL = "http://localhost:5000/api";
-=======
 import { API_URL, isBackendAvailable } from "../config/api";
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 
 export interface AuthCredentials {
   email: string;
@@ -26,14 +21,12 @@ export interface LoginResponse {
 }
 
 export const signup = async (userData: SignupData): Promise<LoginResponse> => {
-<<<<<<< HEAD
-=======
   if (!isBackendAvailable()) {
     // Mock response for GitHub Pages
     const mockUser = {
-      id: "mock-user-id",
-      name: userData.name,
-      email: userData.email
+      id: `user-${Date.now()}`,
+      name: userData.name.trim(), // Ensure name is properly trimmed
+      email: userData.email.toLowerCase().trim() // Normalize email
     };
     const mockToken = "mock-token-" + Date.now();
     localStorage.setItem("token", mockToken);
@@ -41,7 +34,6 @@ export const signup = async (userData: SignupData): Promise<LoginResponse> => {
     return { token: mockToken, user: mockUser };
   }
 
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const response = await axios.post(`${API_URL}/auth/signup`, userData);
     if (response.data.token) {
@@ -57,22 +49,33 @@ export const signup = async (userData: SignupData): Promise<LoginResponse> => {
 export const login = async (
   credentials: AuthCredentials
 ): Promise<LoginResponse> => {
-<<<<<<< HEAD
-=======
   if (!isBackendAvailable()) {
-    // Mock response for GitHub Pages
+    // Check if user already exists in localStorage
+    const existingUser = getCurrentUser();
+    
+    if (existingUser && existingUser.email === credentials.email.toLowerCase().trim()) {
+      // User exists, return the existing user data
+      const mockToken = "mock-token-" + Date.now();
+      localStorage.setItem("token", mockToken);
+      return { token: mockToken, user: existingUser };
+    }
+    
+    // If user doesn't exist, create a new one with email as name
+    const emailPrefix = credentials.email.split('@')[0];
+    const formattedName = emailPrefix.charAt(0).toUpperCase() + emailPrefix.slice(1);
+    
     const mockUser = {
-      id: "mock-user-id",
-      name: "Demo User",
-      email: credentials.email
+      id: `user-${Date.now()}`,
+      name: formattedName,
+      email: credentials.email.toLowerCase().trim()
     };
+    
     const mockToken = "mock-token-" + Date.now();
     localStorage.setItem("token", mockToken);
     localStorage.setItem("user", JSON.stringify(mockUser));
     return { token: mockToken, user: mockUser };
   }
 
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const response = await axios.post(`${API_URL}/auth/login`, credentials);
     if (response.data.token) {

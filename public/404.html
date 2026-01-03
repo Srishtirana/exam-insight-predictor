@@ -1,17 +1,4 @@
 <!DOCTYPE html>
-<<<<<<< HEAD
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Redirect</title>
-    <script type="text/javascript">
-      var pathSegmentsToKeep = 1;
-      var l = window.location;
-      l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
-        l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + 
-        '/?/' +
-=======
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -42,18 +29,13 @@
       l.replace(
         l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
         l.pathname.split('/').slice(0, 1 + pathSegmentsToKeep).join('/') + '/?/' +
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
         l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
         (l.search ? '&' + l.search.slice(1).replace(/&/g, '~and~') : '') +
         l.hash
       );
     </script>
   </head>
-<<<<<<< HEAD
-  <body></body>
-=======
   <body>
     <div id="root"></div>
   </body>
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 </html>

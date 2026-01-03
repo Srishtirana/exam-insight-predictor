@@ -8,6 +8,10 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   startExam,
   submitExam,
+<<<<<<< HEAD
+=======
+  analyzeAttempt,
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   Question,
   ExamParams,
   ExamResult
@@ -18,11 +22,20 @@ const Exam = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+<<<<<<< HEAD
   const [examInfo, setExamInfo] = useState<{ examId: string; questions: Question[] }>({ examId: "", questions: [] });
+=======
+  const [examInfo, setExamInfo] = useState<{ examId: string; questions: Question[]; aiGenerated?: boolean; message?: string }>({ examId: "", questions: [] });
+  const [aiStatus, setAiStatus] = useState<{ isAiGenerated: boolean; message: string }>({ isAiGenerated: false, message: "" });
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [examCompleted, setExamCompleted] = useState(false);
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
+<<<<<<< HEAD
+=======
+  const [aiFeedback, setAiFeedback] = useState<string | null>(null);
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -42,6 +55,31 @@ const Exam = () => {
         // Call the API to start a new exam
         const examData = await startExam(examParams);
         setExamInfo(examData);
+<<<<<<< HEAD
+=======
+        
+        // Set AI status for display
+        setAiStatus({
+          isAiGenerated: examData.aiGenerated || false,
+          message: examData.message || "Questions loaded successfully"
+        });
+        
+        // Show AI generation status
+        if (examData.aiGenerated) {
+          toast({
+            title: "🤖 AI-Powered Questions Generated",
+            description: examData.message || "Questions generated using advanced AI technology for personalized learning",
+            duration: 6000,
+          });
+        } else {
+          toast({
+            title: "📚 Questions from Question Bank",
+            description: "Using curated questions from our database",
+            duration: 4000,
+          });
+        }
+        
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
         setLoading(false);
       } catch (error: any) {
         console.error("Failed to start exam:", error);
@@ -101,6 +139,17 @@ const Exam = () => {
         title: "Exam Submitted",
         description: `Your score: ${result.score}%`
       });
+<<<<<<< HEAD
+=======
+
+      // Trigger AI feedback (best-effort)
+      try {
+        const feedback = await analyzeAttempt(examInfo.examId);
+        setAiFeedback(feedback.feedback);
+      } catch (e) {
+        setAiFeedback(null);
+      }
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     } catch (error: any) {
       console.error("Failed to submit exam:", error);
       toast({
@@ -248,6 +297,19 @@ const Exam = () => {
               })}
             </div>
           </div>
+<<<<<<< HEAD
+=======
+          {aiFeedback && (
+            <div className="max-w-3xl mx-auto mt-10">
+              <h2 className="text-xl font-semibold mb-3">AI Feedback</h2>
+              <Card>
+                <CardContent className="prose max-w-none whitespace-pre-line pt-6">
+                  {aiFeedback}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
         </div>
       </MainLayout>
     );
@@ -273,6 +335,38 @@ const Exam = () => {
             />
           </div>
           
+<<<<<<< HEAD
+=======
+          {/* AI Status Indicator */}
+          <div className="mb-4">
+            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+              aiStatus.isAiGenerated 
+                ? 'bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200' 
+                : 'bg-gray-50 border border-gray-200'
+            }`}>
+              {aiStatus.isAiGenerated ? (
+                <>
+                  <div className="flex items-center gap-1">
+                    <span className="text-purple-600">🤖</span>
+                    <span className="font-medium text-purple-700">AI-Powered</span>
+                  </div>
+                  <span className="text-gray-500">•</span>
+                  <span className="text-gray-600">Questions generated using advanced AI</span>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-1">
+                    <span className="text-gray-600">📚</span>
+                    <span className="font-medium text-gray-700">Question Bank</span>
+                  </div>
+                  <span className="text-gray-500">•</span>
+                  <span className="text-gray-600">Using curated questions from database</span>
+                </>
+              )}
+            </div>
+          </div>
+          
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
           {/* Question */}
           {currentQuestion && (
             <Card className="mb-6">

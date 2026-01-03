@@ -5,9 +5,16 @@ const User = require("../models/User");
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
+<<<<<<< HEAD
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
+=======
+    const normalizedEmail = (email || "").toLowerCase().trim();
+
+    // Check if user exists
+    const existingUser = await User.findOne({ email: normalizedEmail });
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -18,7 +25,11 @@ exports.signup = async (req, res) => {
     // Create new user
     const user = new User({
       name,
+<<<<<<< HEAD
       email,
+=======
+      email: normalizedEmail,
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       password, // will be hashed by our pre-save hook
     });
 
@@ -53,9 +64,16 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+<<<<<<< HEAD
 
     // Check if user exists
     const user = await User.findOne({ email });
+=======
+    const normalizedEmail = (email || "").toLowerCase().trim();
+
+    // Check if user exists
+    const user = await User.findOne({ email: normalizedEmail });
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     if (!user) {
       return res.status(400).json({
         success: false,

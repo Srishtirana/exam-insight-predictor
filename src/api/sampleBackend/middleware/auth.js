@@ -5,7 +5,12 @@ const User = require('../models/User');
 exports.authMiddleware = async (req, res, next) => {
   try {
     // Get token from header
+<<<<<<< HEAD
     const token = req.header('Authorization').replace('Bearer ', '');
+=======
+    const authHeader = req.header('Authorization') || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.replace('Bearer ', '') : '';
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     
     if (!token) {
       return res.status(401).json({ 

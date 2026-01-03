@@ -18,7 +18,11 @@ const QuestionSchema = new mongoose.Schema({
   subject: {
     type: String,
     required: true,
+<<<<<<< HEAD
     enum: ["physics", "chemistry", "biology", "mathematics"],
+=======
+    enum: ["physics", "chemistry", "biology", "mathematics", "verbal", "quant", "polity", "history"],
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   },
   examType: {
     type: String,
@@ -36,6 +40,17 @@ const QuestionSchema = new mongoose.Schema({
   year: {
     type: Number,
   },
+<<<<<<< HEAD
+=======
+  aiGenerated: {
+    type: Boolean,
+    default: false,
+  },
+  explanation: {
+    type: String,
+    default: '',
+  },
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   createdAt: {
     type: Date,
     default: Date.now,

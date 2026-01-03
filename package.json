@@ -3,12 +3,22 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+<<<<<<< HEAD
+=======
+  "homepage": "https://srishtirana.github.io/exam-insight-predictor",
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+<<<<<<< HEAD
     "preview": "vite preview"
+=======
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
@@ -57,7 +67,11 @@
     "react-hook-form": "^7.53.0",
     "react-resizable-panels": "^2.1.3",
     "react-router-dom": "^6.26.2",
+<<<<<<< HEAD
     "recharts": "^2.15.4",
+=======
+    "recharts": "^2.12.7",
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
@@ -75,6 +89,10 @@
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
+<<<<<<< HEAD
+=======
+    "gh-pages": "^6.3.0",
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     "globals": "^15.9.0",
     "lovable-tagger": "^1.1.7",
     "postcss": "^8.4.47",

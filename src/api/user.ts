@@ -1,7 +1,11 @@
 /* eslint-disable */
 import axios from "axios";
+<<<<<<< HEAD
 
 const API_URL = "http://localhost:5000/api";
+=======
+import { API_URL, isBackendAvailable } from "../config/api";
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 
 export interface UserStats {
   totalAttempts: number;
@@ -19,6 +23,14 @@ export interface UserStats {
 }
 
 export const getUserStats = async (): Promise<UserStats> => {
+<<<<<<< HEAD
+=======
+  if (!isBackendAvailable()) {
+    // Return mock stats for GitHub Pages
+    return getSimulatedUserStats();
+  }
+
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const token = localStorage.getItem("token");
     const response = await axios.get(`${API_URL}/user/dashboard`, {

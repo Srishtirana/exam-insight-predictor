@@ -1,7 +1,12 @@
 /* eslint-disable */
 import axios from "axios";
+<<<<<<< HEAD
+
+const API_URL = "http://localhost:5000/api";
+=======
 import { API_URL, isBackendAvailable } from "../config/api";
 import { getMockQuestions, getMockFeedback } from "./mockExamService";
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 
 export interface ExamParams {
   examType: string;
@@ -38,6 +43,11 @@ export interface ExamResult {
   questions: (Question & { selectedAnswer: number | null })[];
 }
 
+<<<<<<< HEAD
+export const startExam = async (
+  params: ExamParams
+): Promise<{ examId: string; questions: Question[] }> => {
+=======
 export interface ExamFeedbackResponse {
   feedback: string;
 }
@@ -57,6 +67,7 @@ export const startExam = async (
     };
   }
 
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/start`, params, {
@@ -72,6 +83,9 @@ export const startExam = async (
 
 export const submitExam = async (
   submission: ExamSubmission
+<<<<<<< HEAD
+): Promise<ExamResult> => {
+=======
 ): Promise<ExamResult & { aiFeedback?: string }> => {
   if (!isBackendAvailable()) {
     // Use mock submission for GitHub Pages
@@ -84,6 +98,7 @@ export const submitExam = async (
     };
   }
 
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   try {
     const token = localStorage.getItem("token");
     const response = await axios.post(`${API_URL}/exam/submit`, submission, {
@@ -91,7 +106,11 @@ export const submitExam = async (
         Authorization: `Bearer ${token}`,
       },
     });
+<<<<<<< HEAD
+    return response.data.result;
+=======
     return response.data;
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   } catch (error) {
     throw error;
   }
@@ -321,6 +340,8 @@ export const simulateExamSubmission = (
     questions: questionsWithAnswers,
   };
 };
+<<<<<<< HEAD
+=======
 
 export const analyzeAttempt = async (
   examId: string
@@ -360,3 +381,4 @@ export const getAIFeedback = async (
     throw error;
   }
 };
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf

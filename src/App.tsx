@@ -2,12 +2,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom"; // Using HashRouter for GitHub Pages
 import { AuthProvider } from "@/contexts/AuthContext";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import Exam from "./pages/Exam";
+import PYQBank from "./pages/PYQBank";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,15 +21,17 @@ const App = () => {
           <Toaster />
           <Sonner />
           <AuthProvider>
-            <BrowserRouter basename="/exam-insight-predictor">
+            {/* Using HashRouter for GitHub Pages compatibility */}
+            <HashRouter>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/exam" element={<Exam />} />
+                <Route path="/pyq-bank" element={<PYQBank />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </BrowserRouter>
+            </HashRouter>
           </AuthProvider>
         </TooltipProvider>
       </QueryClientProvider>
@@ -38,8 +41,8 @@ const App = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Quizyfy</h1>
-          <p className="text-gray-600">Welcome to Exam Insight Predictor</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Exam Insight Predictor</h1>
+          <p className="text-gray-600">An error occurred. Please try again.</p>
           <div className="mt-8">
             <button 
               onClick={() => window.location.reload()} 

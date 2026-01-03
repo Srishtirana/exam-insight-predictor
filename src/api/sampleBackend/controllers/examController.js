@@ -1,7 +1,10 @@
 const Question = require("../models/Question");
 const Attempt = require("../models/Attempt");
 const User = require("../models/User");
+<<<<<<< HEAD
+=======
 const AIQuestionService = require("../services/aiQuestionService");
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 
 // Start a new exam
 exports.startExam = async (req, res) => {
@@ -18,6 +21,62 @@ exports.startExam = async (req, res) => {
       });
     }
 
+<<<<<<< HEAD
+    // Find questions matching the criteria
+    let questions = await Question.aggregate([
+      {
+        $match: {
+          examType: examType,
+          subject: subject,
+          difficulty: difficulty.toLowerCase(),
+        },
+      },
+      { $sample: { size: parseInt(numberOfQuestions) } },
+    ]);
+
+    // If not enough questions in DB, generate some placeholder questions
+    if (questions.length < numberOfQuestions) {
+      const placeholderCount = numberOfQuestions - questions.length;
+
+      // Topics by subject (example)
+      const topics = {
+        Physics: ["Mechanics", "Thermodynamics", "Optics", "Electromagnetism"],
+        Chemistry: [
+          "Organic Chemistry",
+          "Inorganic Chemistry",
+          "Physical Chemistry",
+        ],
+        Biology: ["Cell Biology", "Genetics", "Anatomy", "Ecology"],
+        Mathematics: ["Algebra", "Calculus", "Geometry", "Probability"],
+      };
+
+      const subjectTopics = topics[subject] || ["General"];
+
+      // Generate placeholder questions
+      for (let i = 0; i < placeholderCount; i++) {
+        const topic =
+          subjectTopics[Math.floor(Math.random() * subjectTopics.length)];
+        const options = [
+          { id: 0, text: `Option A for question ${i + 1}` },
+          { id: 1, text: `Option B for question ${i + 1}` },
+          { id: 2, text: `Option C for question ${i + 1}` },
+          { id: 3, text: `Option D for question ${i + 1}` },
+        ];
+
+        const question = new Question({
+          questionText: `Sample ${subject} question ${i + 1} about ${topic}?`,
+          options,
+          correctAnswerIndex: Math.floor(Math.random() * 4),
+          subject,
+          examType,
+          difficulty,
+          topic,
+        });
+
+        await question.save();
+        questions.push(question);
+      }
+=======
     // Try to generate AI questions first
     let questions = [];
     let aiQuestionsGenerated = false;
@@ -94,6 +153,7 @@ exports.startExam = async (req, res) => {
           }
         }
       }
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     }
 
     // Create exam attempt record
@@ -127,10 +187,13 @@ exports.startExam = async (req, res) => {
       success: true,
       examId: attempt._id,
       questions: formattedQuestions,
+<<<<<<< HEAD
+=======
       aiGenerated: aiQuestionsGenerated,
       message: aiQuestionsGenerated 
         ? `Generated ${questions.length} AI-powered questions for ${examType} ${subject}` 
         : `Using ${questions.length} questions from question bank`,
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     });
   } catch (error) {
     console.error("Start exam error:", error);
@@ -148,16 +211,33 @@ exports.submitExam = async (req, res) => {
     const { examId, answers } = req.body;
     const userId = req.user.id;
 
+<<<<<<< HEAD
+    // Validate request
+    if (!examId || !answers || !Array.isArray(answers)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid submission format",
+=======
     if (!examId || !answers || !Array.isArray(answers)) {
       return res.status(400).json({
         success: false,
         message: "Missing required fields",
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       });
     }
 
     // Find the attempt
+<<<<<<< HEAD
+    const attempt = await Attempt.findOne({
+      _id: examId,
+      user: userId,
+    });
+
+    if (!attempt) {
+=======
     const attempt = await Attempt.findById(examId).populate('user');
     if (!attempt || attempt.user._id.toString() !== userId) {
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       return res.status(404).json({
         success: false,
         message: "Exam attempt not found",
@@ -166,6 +246,57 @@ exports.submitExam = async (req, res) => {
 
     // Calculate score
     let correctAnswers = 0;
+<<<<<<< HEAD
+    const questionsWithAnswers = attempt.questions.map((question) => {
+      const userAnswer = answers.find(
+        (a) => a.questionId === question.questionId.toString()
+      );
+      const selectedAnswer = userAnswer ? userAnswer.selectedAnswer : null;
+
+      // Check if answer is correct
+      const isCorrect = selectedAnswer === question.correctAnswerIndex;
+      if (isCorrect) correctAnswers++;
+
+      return {
+        ...question.toObject(),
+        selectedAnswer,
+      };
+    });
+
+    // Update attempt with results
+    attempt.questions = questionsWithAnswers;
+    attempt.score = correctAnswers;
+    attempt.completedAt = new Date();
+    await attempt.save();
+
+    // Update user's exam history
+    await User.findByIdAndUpdate(userId, {
+      $push: {
+        examHistory: {
+          examId: attempt._id,
+          subject: attempt.subject,
+          examType: attempt.examType,
+          difficulty: attempt.difficulty,
+          score: correctAnswers,
+          totalQuestions: attempt.totalQuestions,
+          date: new Date(),
+        },
+      },
+    });
+
+    // Prepare result for frontend
+    const result = {
+      score: Math.round((correctAnswers / attempt.totalQuestions) * 100),
+      totalQuestions: attempt.totalQuestions,
+      correctAnswers,
+      incorrectAnswers: attempt.totalQuestions - correctAnswers,
+      questions: questionsWithAnswers,
+    };
+
+    res.json({
+      success: true,
+      result,
+=======
     const questionsWithAnswers = attempt.questions.map((question, index) => {
       const userAnswer = answers.find(a => a.questionId === question.questionId.toString());
       const isCorrect = userAnswer && userAnswer.selectedAnswer === question.correctAnswerIndex;
@@ -223,6 +354,7 @@ exports.submitExam = async (req, res) => {
       questions: questionsWithAnswers,
       aiFeedback: aiFeedback,
       message: `Exam completed! You scored ${score}%`
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     });
   } catch (error) {
     console.error("Submit exam error:", error);
@@ -233,6 +365,8 @@ exports.submitExam = async (req, res) => {
     });
   }
 };
+<<<<<<< HEAD
+=======
 
 // Get AI feedback for an attempt
 exports.getAIFeedback = async (req, res) => {
@@ -325,3 +459,4 @@ exports.testAIQuestions = async (req, res) => {
     });
   }
 };
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf

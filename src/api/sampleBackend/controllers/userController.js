@@ -10,6 +10,16 @@ exports.getDashboardStats = async (req, res) => {
     // Get user's exam attempts
     const attempts = await Attempt.find({ user: userId }).sort({ createdAt: -1 });
     
+<<<<<<< HEAD
+    // Calculate stats
+    let totalAttempts = attempts.length;
+    let totalCorrect = 0;
+    let totalQuestions = 0;
+    
+    attempts.forEach(attempt => {
+      totalCorrect += attempt.score;
+      totalQuestions += attempt.totalQuestions;
+=======
     // Calculate basic stats
     let totalAttempts = attempts.length;
     let totalCorrect = 0;
@@ -22,6 +32,7 @@ exports.getDashboardStats = async (req, res) => {
         totalCorrect += attempt.score;
         totalQuestions += attempt.totalQuestions;
       }
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     });
     
     // Calculate accuracy
@@ -30,21 +41,33 @@ exports.getDashboardStats = async (req, res) => {
       : 0;
     
     // Get last exam attempt details
+<<<<<<< HEAD
+    const lastExam = attempts.length > 0 ? attempts[0] : null;
+=======
     const lastExam = attempts.find(attempt => attempt.completedAt) || null;
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     
     let lastExamDetails = null;
     if (lastExam) {
       lastExamDetails = {
         subject: lastExam.subject,
+<<<<<<< HEAD
+        score: Math.round((lastExam.score / lastExam.totalQuestions) * 100),
+        date: lastExam.createdAt.toDateString()
+=======
         examType: lastExam.examType,
         difficulty: lastExam.difficulty,
         score: Math.round((lastExam.score / lastExam.totalQuestions) * 100),
         date: lastExam.completedAt.toDateString()
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       };
     }
     
     // Calculate subject-specific stats
     const subjectStats = {};
+<<<<<<< HEAD
+    attempts.forEach(attempt => {
+=======
     const examTypeStats = {};
     const difficultyStats = {};
     
@@ -52,19 +75,29 @@ exports.getDashboardStats = async (req, res) => {
       if (!attempt.completedAt) return;
       
       // Subject stats
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       if (!subjectStats[attempt.subject]) {
         subjectStats[attempt.subject] = {
           subject: attempt.subject,
           attempts: 0,
           totalScore: 0,
+<<<<<<< HEAD
+          totalQuestions: 0
+=======
           totalQuestions: 0,
           bestScore: 0
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
         };
       }
       
       subjectStats[attempt.subject].attempts += 1;
       subjectStats[attempt.subject].totalScore += attempt.score;
       subjectStats[attempt.subject].totalQuestions += attempt.totalQuestions;
+<<<<<<< HEAD
+    });
+    
+    // Format subject stats for response
+=======
       const currentScore = Math.round((attempt.score / attempt.totalQuestions) * 100);
       if (currentScore > subjectStats[attempt.subject].bestScore) {
         subjectStats[attempt.subject].bestScore = currentScore;
@@ -100,11 +133,24 @@ exports.getDashboardStats = async (req, res) => {
     });
     
     // Format stats for response
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     const examStats = Object.values(subjectStats).map(stat => ({
       subject: stat.subject,
       attempts: stat.attempts,
       averageScore: stat.totalQuestions > 0 
         ? Math.round((stat.totalScore / stat.totalQuestions) * 100) 
+<<<<<<< HEAD
+        : 0
+    }));
+    
+    res.json({
+      success: true,
+      data: {
+        totalAttempts,
+        accuracy,
+        lastExamDetails,
+        examStats
+=======
         : 0,
       bestScore: stat.bestScore
     }));
@@ -155,6 +201,7 @@ exports.getDashboardStats = async (req, res) => {
         recentAttempts,
         studyStreak,
         insights
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
       }
     });
   } catch (error) {
@@ -166,6 +213,8 @@ exports.getDashboardStats = async (req, res) => {
     });
   }
 };
+<<<<<<< HEAD
+=======
 
 // Helper function to calculate study streak
 function calculateStudyStreak(completedAttempts) {
@@ -231,3 +280,4 @@ function generatePerformanceInsights(examStats, accuracy, totalAttempts) {
   
   return insights;
 }
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf

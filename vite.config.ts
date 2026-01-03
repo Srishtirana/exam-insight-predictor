@@ -5,9 +5,9 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
-  // ✅ IMPORTANT: Base path for GitHub Pages
+  // Base path for GitHub Pages
   // Replace "exam-insight-predictor" with your repo name if different
-  base: "/exam-insight-predictor/",
+  base: "/exam-insight-predictor/", // GitHub Pages repo name
 
   server: {
     host: "::",

@@ -14,9 +14,15 @@ mongoose
     process.exit(1);
   });
 
+<<<<<<< HEAD
+// Sample questions
+const sampleQuestions = [
+  // Physics - JEE
+=======
 // Comprehensive question database with real exam questions
 const sampleQuestions = [
   // JEE Physics Questions - Easy Level
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   {
     questionText: "Which of these is not a unit of energy?",
     options: [
@@ -30,6 +36,8 @@ const sampleQuestions = [
     examType: "JEE",
     difficulty: "easy",
     topic: "Mechanics",
+<<<<<<< HEAD
+=======
     explanation: "Newton is a unit of force, not energy. Joule, calorie, and electron-volt are all units of energy."
   },
   {
@@ -166,6 +174,7 @@ const sampleQuestions = [
     difficulty: "easy",
     topic: "Waves",
     explanation: "Velocity v = fλ = 50 × 4 = 200 m/s."
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   },
   {
     questionText: "What is the SI unit of electric current?",
@@ -180,6 +189,13 @@ const sampleQuestions = [
     examType: "JEE",
     difficulty: "easy",
     topic: "Electricity",
+<<<<<<< HEAD
+  },
+
+  // Chemistry - JEE
+  {
+    questionText: "What is the pH of a neutral solution at 25°C?",
+=======
     explanation: "Ampere is the SI unit of electric current, named after André-Marie Ampère."
   },
   {
@@ -291,6 +307,7 @@ const sampleQuestions = [
   // JEE Chemistry Questions - Easy Level
   {
     questionText: "What is the pH of pure water at 25°C?",
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     options: [
       { id: 0, text: "0" },
       { id: 1, text: "7" },
@@ -302,6 +319,11 @@ const sampleQuestions = [
     examType: "JEE",
     difficulty: "easy",
     topic: "Acid-Base",
+<<<<<<< HEAD
+  },
+
+  // Mathematics - JEE
+=======
     explanation: "Pure water has a pH of 7 at 25°C, making it neutral."
   },
   {
@@ -501,6 +523,7 @@ const sampleQuestions = [
   },
 
   // JEE Mathematics Questions - Easy Level
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   {
     questionText: "What is the derivative of x²?",
     options: [
@@ -512,6 +535,13 @@ const sampleQuestions = [
     correctAnswerIndex: 1,
     subject: "mathematics",
     examType: "JEE",
+<<<<<<< HEAD
+    difficulty: "medium",
+    topic: "Calculus",
+  },
+
+  // Biology - NEET
+=======
     difficulty: "easy",
     topic: "Calculus",
     explanation: "Using the power rule, the derivative of x² is 2x."
@@ -713,6 +743,7 @@ const sampleQuestions = [
   },
 
   // NEET Biology Questions - Easy Level
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   {
     questionText: "Which organelle is known as the 'powerhouse of the cell'?",
     options: [
@@ -726,6 +757,9 @@ const sampleQuestions = [
     examType: "NEET",
     difficulty: "easy",
     topic: "Cell Biology",
+<<<<<<< HEAD
+  },
+=======
     explanation: "Mitochondria are called the powerhouse of the cell because they produce ATP through cellular respiration."
   },
   {
@@ -1364,6 +1398,7 @@ const sampleQuestions = [
     topic: "Modern History",
     explanation: "Vasco da Gama discovered the sea route to India around the Cape of Good Hope in 1498."
   }
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
 ];
 
 // Function to seed database

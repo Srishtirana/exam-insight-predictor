@@ -23,7 +23,14 @@ const Header = () => {
           {isLoggedIn ? (
             <>
               <Link to="/dashboard" className="text-gray-700 hover:text-exam-purple transition-colors">
+<<<<<<< HEAD
+                Dashboard✈︎
+              </Link>
+              <Link to="/pyq-bank" className="text-gray-700 hover:text-exam-purple transition-colors">
+                PYQ Bank 📚
+=======
                 Dashboard ✈︎
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
               </Link>
               <Button variant="outline" onClick={logout}>
                 Log Out ⍈
@@ -32,7 +39,11 @@ const Header = () => {
           ) : (
             <>
               <Link to="/auth" className="text-gray-700 hover:text-exam-purple transition-colors">
+<<<<<<< HEAD
+                Log In 🗝
+=======
                 Log In ⟳
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
               </Link>
               <Link to="/auth">
                 <Button>Sign Up ✓</Button>

@@ -33,6 +33,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     const initAuth = () => {
+<<<<<<< HEAD
+      const userAuth = isAuthenticated();
+      if (userAuth) {
+        const userData = getCurrentUser();
+        setUser(userData);
+        setIsLoggedIn(true);
+      }
+      setLoading(false);
+    };
+
+    initAuth();
+=======
       try {
         const userAuth = isAuthenticated();
         if (userAuth) {
@@ -49,6 +61,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Use setTimeout to ensure the app renders first
     setTimeout(initAuth, 0);
+>>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   }, []);
 
   const handleLogout = () => {

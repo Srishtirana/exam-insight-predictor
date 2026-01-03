@@ -8,10 +8,7 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   startExam,
   submitExam,
-<<<<<<< HEAD
-=======
   analyzeAttempt,
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   Question,
   ExamParams,
   ExamResult
@@ -22,20 +19,21 @@ const Exam = () => {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-<<<<<<< HEAD
-  const [examInfo, setExamInfo] = useState<{ examId: string; questions: Question[] }>({ examId: "", questions: [] });
-=======
-  const [examInfo, setExamInfo] = useState<{ examId: string; questions: Question[]; aiGenerated?: boolean; message?: string }>({ examId: "", questions: [] });
-  const [aiStatus, setAiStatus] = useState<{ isAiGenerated: boolean; message: string }>({ isAiGenerated: false, message: "" });
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
+  const [examInfo, setExamInfo] = useState<{ 
+    examId: string; 
+    questions: Question[]; 
+    aiGenerated?: boolean; 
+    message?: string 
+  }>({ examId: "", questions: [] });
+  const [aiStatus, setAiStatus] = useState<{ isAiGenerated: boolean; message: string }>({ 
+    isAiGenerated: false, 
+    message: "" 
+  });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [examCompleted, setExamCompleted] = useState(false);
   const [examResult, setExamResult] = useState<ExamResult | null>(null);
-<<<<<<< HEAD
-=======
   const [aiFeedback, setAiFeedback] = useState<string | null>(null);
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -55,8 +53,6 @@ const Exam = () => {
         // Call the API to start a new exam
         const examData = await startExam(examParams);
         setExamInfo(examData);
-<<<<<<< HEAD
-=======
         
         // Set AI status for display
         setAiStatus({
@@ -79,7 +75,6 @@ const Exam = () => {
           });
         }
         
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
         setLoading(false);
       } catch (error: any) {
         console.error("Failed to start exam:", error);
@@ -139,17 +134,15 @@ const Exam = () => {
         title: "Exam Submitted",
         description: `Your score: ${result.score}%`
       });
-<<<<<<< HEAD
-=======
 
       // Trigger AI feedback (best-effort)
       try {
         const feedback = await analyzeAttempt(examInfo.examId);
         setAiFeedback(feedback.feedback);
       } catch (e) {
+        console.error("Failed to get AI feedback:", e);
         setAiFeedback(null);
       }
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
     } catch (error: any) {
       console.error("Failed to submit exam:", error);
       toast({
@@ -270,15 +263,15 @@ const Exam = () => {
                           
                           return (
                             <div
-                              key={option.id}
+                              key={option}
                               className={`p-3 rounded-md border ${optionClass} flex items-start`}
                             >
                               <div className="mr-3 mt-0.5">
-                                {question.correctAnswerIndex === optIndex ? (
+                                {question.correctAnswer === optIndex ? (
                                   <svg className="h-5 w-5 text-exam-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                   </svg>
-                                ) : question.selectedAnswer === optIndex ? (
+                                ) : selectedAnswers[question.id] === optIndex ? (
                                   <svg className="h-5 w-5 text-exam-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                   </svg>
@@ -286,7 +279,7 @@ const Exam = () => {
                                   <div className="h-5 w-5 rounded-full border-2 border-gray-300"></div>
                                 )}
                               </div>
-                              <span>{option.text}</span>
+                              <span>{option}</span>
                             </div>
                           );
                         })}
@@ -297,19 +290,15 @@ const Exam = () => {
               })}
             </div>
           </div>
-<<<<<<< HEAD
-=======
+          
           {aiFeedback && (
             <div className="max-w-3xl mx-auto mt-10">
               <h2 className="text-xl font-semibold mb-3">AI Feedback</h2>
-              <Card>
-                <CardContent className="prose max-w-none whitespace-pre-line pt-6">
-                  {aiFeedback}
-                </CardContent>
-              </Card>
+              <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <p className="whitespace-pre-line">{aiFeedback}</p>
+              </div>
             </div>
           )}
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
         </div>
       </MainLayout>
     );
@@ -335,38 +324,36 @@ const Exam = () => {
             />
           </div>
           
-<<<<<<< HEAD
-=======
           {/* AI Status Indicator */}
-          <div className="mb-4">
-            <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
-              aiStatus.isAiGenerated 
-                ? 'bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200' 
-                : 'bg-gray-50 border border-gray-200'
-            }`}>
-              {aiStatus.isAiGenerated ? (
-                <>
-                  <div className="flex items-center gap-1">
-                    <span className="text-purple-600">🤖</span>
-                    <span className="font-medium text-purple-700">AI-Powered</span>
-                  </div>
-                  <span className="text-gray-500">•</span>
-                  <span className="text-gray-600">Questions generated using advanced AI</span>
-                </>
-              ) : (
-                <>
-                  <div className="flex items-center gap-1">
-                    <span className="text-gray-600">📚</span>
-                    <span className="font-medium text-gray-700">Question Bank</span>
-                  </div>
-                  <span className="text-gray-500">•</span>
-                  <span className="text-gray-600">Using curated questions from database</span>
-                </>
-              )}
+          {aiStatus && (
+            <div className="mb-4">
+              <div className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm ${
+                aiStatus.isAiGenerated 
+                  ? 'bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200' 
+                  : 'bg-gray-50 border border-gray-200'
+              }`}>
+                {aiStatus.isAiGenerated ? (
+                  <>
+                    <div className="flex items-center gap-1">
+                      <span className="text-purple-600">🤖</span>
+                      <span className="font-medium text-purple-700">AI-Powered</span>
+                    </div>
+                    <span className="text-gray-500">•</span>
+                    <span className="text-gray-600">Questions generated using advanced AI</span>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-center gap-1">
+                      <span className="text-gray-600">📚</span>
+                      <span className="font-medium text-gray-700">Question Bank</span>
+                    </div>
+                    <span className="text-gray-500">•</span>
+                    <span className="text-gray-600">Using curated questions from database</span>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-          
->>>>>>> 6522c29d8e296c7698ca89ccf29079ac3c4a38bf
+          )}
           {/* Question */}
           {currentQuestion && (
             <Card className="mb-6">

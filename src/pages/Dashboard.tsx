@@ -236,8 +236,11 @@ const Dashboard = () => {
     setIsLoading(false);
   }, [stats, error, toast]);
 
-  // Show loading state while data is being fetched
-  if (isLoading || !stats) {
+  // Derived state
+  const displayStats = stats || getSimulatedUserStats();
+
+  // Loading state
+  if (isLoading) {
     return (
       <MainLayout requireAuth>
         <div className="container mx-auto px-4 py-8">
@@ -272,23 +275,31 @@ const Dashboard = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
+<<<<<<< HEAD
             title="Total Quizzes"
             value={stats.totalQuizzes || 0}
             description="Total number of quizzes taken"
+=======
+            title="Total Attempts"
+            value={displayStats.totalAttempts}
+            description="+5 from last month"
+>>>>>>> 9abcbd346314186855a347202eca5ee1e7ff40ac
             icon="📊"
           />
           <StatCard
-            title="Accuracy"
-            value={`${Math.round(stats.accuracy || 0)}%`}
-            description="Overall accuracy across all exams"
+            title="Average Score"
+            value={`${displayStats.accuracy}%`}
+            description="+3% from last month"
             icon="🎯"
           />
-          <StatCard
-            title="Last Exam"
-            value={stats.lastExamDetails?.subject || 'N/A'}
-            description={stats.lastExamDetails ? `${stats.lastExamDetails.score}% on ${new Date(stats.lastExamDetails.date).toLocaleDateString()}` : 'No exams taken yet'}
-            icon="📝"
-          />
+          {displayStats.lastExamDetails && (
+            <StatCard
+              title="Last Exam"
+              value={`${displayStats.lastExamDetails.score}%`}
+              description={displayStats.lastExamDetails.subject}
+              icon="📝"
+            />
+          )}
           <StatCard
             title="Active Streak"
             value={`${stats.streakDays || 0} days`}
@@ -298,10 +309,17 @@ const Dashboard = () => {
         </div>
 
         {/* Charts */}
+<<<<<<< HEAD
         <div className="grid gap-6 md:grid-cols-2 mb-8">
           <AccuracyPieChart accuracy={stats.accuracy || 0} />
           {stats.subjectPerformance?.length > 0 && (
             <SubjectPerformanceChart data={stats.subjectPerformance} />
+=======
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
+          <AccuracyPieChart accuracy={displayStats.accuracy} />
+          {displayStats.examStats?.length > 0 && (
+            <SubjectPerformanceChart data={displayStats.examStats} />
+>>>>>>> 9abcbd346314186855a347202eca5ee1e7ff40ac
           )}
         </div>
 

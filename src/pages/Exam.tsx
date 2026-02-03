@@ -5,13 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/components/ui/use-toast";
-import {
-  startExam,
-  submitExam,
-  analyzeAttempt,
-  Question,
-  ExamParams,
-  ExamResult
+import { 
+  startExam, 
+  submitExam, 
+  analyzeAttempt, 
+  type Question, 
+  type ExamParams, 
+  type ExamResult, 
+  type Option as QuestionOption
 } from "@/api/exam";
 
 const Exam = () => {
@@ -24,7 +25,12 @@ const Exam = () => {
     questions: Question[]; 
     aiGenerated?: boolean; 
     message?: string 
-  }>({ examId: "", questions: [] });
+  }>({ 
+    examId: "", 
+    questions: [],
+    aiGenerated: false,
+    message: ""
+  });
   const [aiStatus, setAiStatus] = useState<{ isAiGenerated: boolean; message: string }>({ 
     isAiGenerated: false, 
     message: "" 
@@ -91,13 +97,13 @@ const Exam = () => {
     initExam();
   }, [navigate, toast]);
 
-  const currentQuestion = loading || !examInfo.questions.length ? null : examInfo.questions[currentQuestionIndex];
+  const currentQuestion = loading || !examInfo.questions.length ? undefined : examInfo.questions[currentQuestionIndex];
   
   const handleSelectAnswer = (questionId: string, optionIndex: number) => {
-    setSelectedAnswers({
-      ...selectedAnswers,
+    setSelectedAnswers(prev => ({
+      ...prev,
       [questionId]: optionIndex,
-    });
+    }));
   };
   
   const handlePreviousQuestion = () => {
@@ -108,7 +114,10 @@ const Exam = () => {
   
   const handleNextQuestion = () => {
     if (currentQuestionIndex < examInfo.questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
+      setCurrentQuestionIndex(prev => prev + 1);
+    } else if (Object.keys(selectedAnswers).length === examInfo.questions.length) {
+      // Auto-submit if all questions are answered and user clicks next on last question
+      handleSubmitExam();
     }
   };
   
@@ -116,7 +125,7 @@ const Exam = () => {
     // Convert selected answers to the format expected by the API
     const answers = Object.entries(selectedAnswers).map(([questionId, selectedAnswer]) => ({
       questionId,
-      selectedAnswer,
+      selectedAnswer: selectedAnswer as number,
     }));
     
     setSubmitting(true);
@@ -263,15 +272,15 @@ const Exam = () => {
                           
                           return (
                             <div
-                              key={option}
+                              key={option.id}
                               className={`p-3 rounded-md border ${optionClass} flex items-start`}
                             >
                               <div className="mr-3 mt-0.5">
-                                {question.correctAnswer === optIndex ? (
+                                {question.correctAnswerIndex === optIndex ? (
                                   <svg className="h-5 w-5 text-exam-green" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                   </svg>
-                                ) : selectedAnswers[question.id] === optIndex ? (
+                                ) : selectedAnswers[question.id] !== undefined && selectedAnswers[question.id] === optIndex ? (
                                   <svg className="h-5 w-5 text-exam-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                                   </svg>
@@ -279,7 +288,7 @@ const Exam = () => {
                                   <div className="h-5 w-5 rounded-full border-2 border-gray-300"></div>
                                 )}
                               </div>
-                              <span>{option}</span>
+                              <span>{typeof option === 'string' ? option : option.text}</span>
                             </div>
                           );
                         })}
@@ -360,12 +369,12 @@ const Exam = () => {
               <CardHeader>
                 <CardTitle>{currentQuestion.questionText}</CardTitle>
                 <CardDescription>
-                  {currentQuestion.subject} - {currentQuestion.difficulty}
+                  {currentQuestion.subject} • {currentQuestion.difficulty}
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {currentQuestion.options.map((option) => (
+                  {currentQuestion.options.map((option: QuestionOption) => (
                     <div
                       key={option.id}
                       className={`flex items-center p-4 rounded-md border cursor-pointer transition-colors ${
@@ -431,11 +440,28 @@ const Exam = () => {
                         : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
                     }
                     ${currentQuestionIndex === index ? "ring-2 ring-offset-2 ring-exam-purple" : ""}
+                    ${index === currentQuestionIndex ? "font-bold" : ""}
                   `}
+                  aria-label={`Question ${index + 1}${selectedAnswers[question.id] !== undefined ? ' (answered)' : ''}`}
                 >
                   {index + 1}
                 </button>
               ))}
+            </div>
+            
+            <div className="mt-4 flex justify-between items-center">
+              <span className="text-sm text-gray-500">
+                {Object.keys(selectedAnswers).length} of {examInfo.questions.length} questions answered
+              </span>
+              {Object.keys(selectedAnswers).length === examInfo.questions.length && (
+                <Button 
+                  onClick={handleSubmitExam}
+                  className="bg-exam-green hover:bg-exam-green/90"
+                  disabled={submitting}
+                >
+                  {submitting ? "Submitting..." : "Submit Exam"}
+                </Button>
+              )}
             </div>
           </div>
         </div>

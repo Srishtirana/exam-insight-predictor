@@ -2,17 +2,21 @@ import { createContext, ReactNode, useContext, useState, useEffect } from "react
 import { isAuthenticated as checkAuth, getCurrentUser, logout as authLogout, User } from "../api/auth";
 
 type AuthContextType = {
-  isAuthenticated: boolean;
+  isLoggedIn: boolean;
   user: User | null;
   loading: boolean;
   logout: () => Promise<void>;
+  setUser: (user: User | null) => void;
+  setIsLoggedIn: (isLoggedIn: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
-  isAuthenticated: false,
+  isLoggedIn: false,
   user: null,
   loading: true,
-  logout: async () => {}
+  logout: async () => {},
+  setUser: () => {},
+  setIsLoggedIn: () => {}
 });
 
 export const useAuth = () => {
@@ -68,11 +72,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   return (
     <AuthContext.Provider 
-      value={{ 
-        isAuthenticated: isLoggedIn, 
+      value={{
+        isLoggedIn,
         user,
         loading,
-        logout 
+        logout,
+        setUser,
+        setIsLoggedIn,
       }}
     >
       {children}

@@ -3,18 +3,18 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import { getUserStats, getSimulatedUserStats, type UserStats } from "../../api/user";
-import { ExamParams } from "../../api/exam";
+import { UserStats } from "../types";
+import { useAuth } from "../contexts/AuthContext";
+import { getUserStats, getSimulatedUserStats } from "../api/user";
 import { useQuery } from "@tanstack/react-query";
-import MainLayout from "../../components/layout/MainLayout";
+import MainLayout from "../components/layout/MainLayout";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,19 +22,20 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../components/ui/form";
+} from "../components/ui/form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../components/ui/select";
-import { Button } from "../../components/ui/button";
-import { Input } from "../../components/ui/input";
-import { Skeleton } from "../../components/ui/skeleton";
-import { useToast } from "../../components/ui/use-toast";
+} from "../components/ui/select";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Skeleton } from "../components/ui/skeleton";
+import { useToast } from "../components/ui/use-toast";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { Loader2 } from 'lucide-react';
 
 // Form Schema
 const formSchema = z.object({
@@ -71,17 +72,14 @@ interface AccuracyPieChartProps {
 // Components
 const StatCard = ({ title, value, description, icon }: StatCardProps) => (
   <Card>
-<<<<<<< HEAD
-    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-      <CardTitle className="text-sm font-medium">{title}</CardTitle>
-      {icon && <div className="h-4 w-4 text-muted-foreground">{icon}</div>}
-=======
-    <CardHeader className="pb-2">
-      <CardDescription>{title}</CardDescription>
-      <CardTitle className="text-3xl">
-        {icon} {value}
+    <CardHeader className="flex flex-col items-start pb-2">
+      <div className="flex items-center justify-between w-full">
+        <CardDescription className="text-sm font-medium">{title}</CardDescription>
+        {icon && <div className="ml-2">{icon}</div>}
+      </div>
+      <CardTitle className="text-2xl mt-2">
+        {value}
       </CardTitle>
->>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
     </CardHeader>
     {description && (
       <CardContent>
@@ -171,19 +169,22 @@ const AccuracyPieChart = ({ accuracy }: AccuracyPieChartProps) => {
 
 // Main Dashboard Component
 const Dashboard = () => {
-  // Hooks
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  // State
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  
+  // Hooks
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   // Form handling
+  // Form setup
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       examType: "JEE",
-      subject: "physics",
+      subject: "Physics",
       difficulty: "medium",
       numberOfQuestions: 10,
     },
@@ -196,92 +197,68 @@ const Dashboard = () => {
     retry: 1,
   });
 
-<<<<<<< HEAD
-  // Handle form submission
-=======
   // Handlers
->>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
   const handleStartExam = (values: z.infer<typeof formSchema>) => {
     sessionStorage.setItem("examParams", JSON.stringify(values));
     navigate("/exam");
   };
 
-<<<<<<< HEAD
-  // Set recent activity from stats
-  useEffect(() => {
-    if (stats) {
-=======
-  // Effects
+  // Set recent activity from stats and handle errors
   useEffect(() => {
     if (error) {
       toast({
         variant: "destructive",
-        title: "Error Loading Dashboard",
+        title: "Error",
+        description: error.message,
+      });
+      
+      // Fallback data in case of error
+      toast({
+        title: "Using Simulated Data",
         description: "Could not load user statistics. Using simulated data instead.",
       });
+      
       setRecentActivity([
         { subject: 'Physics', score: 75, date: '2023-06-15' },
         { subject: 'Chemistry', score: 82, date: '2023-06-10' },
         { subject: 'Mathematics', score: 68, date: '2023-06-05' },
       ]);
     } else if (stats) {
->>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
       setRecentActivity(
-        stats.examStats?.map(stat => ({
+        stats.subjectPerformance?.map(stat => ({
           subject: stat.subject,
           score: stat.averageScore,
-<<<<<<< HEAD
           date: new Date().toISOString().split('T')[0] // Use current date as fallback
-=======
-          date: new Date().toISOString().split('T')[0]
->>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
         })) || []
       );
     }
+    
     setIsLoading(false);
-<<<<<<< HEAD
-  }, [stats]);
-=======
   }, [stats, error, toast]);
->>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
 
   // Show loading state while data is being fetched
   if (isLoading || !stats) {
     return (
       <MainLayout requireAuth>
-        <div className="container mx-auto p-6">
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[1, 2, 3, 4].map((i) => (
-              <Skeleton key={i} className="h-[120px] w-full rounded-xl" />
+              <Skeleton key={i} className="h-32 rounded-lg" />
             ))}
           </div>
-          <div className="mt-6 grid gap-4 md:grid-cols-2">
-            <Skeleton className="h-[400px] w-full rounded-xl" />
-            <Skeleton className="h-[400px] w-full rounded-xl" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
+            <Skeleton className="h-80" />
           </div>
         </div>
       </MainLayout>
     );
   }
 
-<<<<<<< HEAD
-  // Handle error state
-  if (error) {
-    toast({
-      title: "Error",
-      description: "Could not load user statistics. Please try again later.",
-      variant: "destructive",
-    });
-  }
-
   return (
     <MainLayout requireAuth>
       <div className="container mx-auto px-4 py-8">
-=======
-  return (
-    <MainLayout requireAuth>
-      <div className="container mx-auto p-6">
->>>>>>> bee1a006c25e0ce529fd3074771684fa80562b3a
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-exam-dark-purple mb-2">
@@ -295,9 +272,9 @@ const Dashboard = () => {
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
-            title="Total Attempts"
-            value={stats.totalAttempts || 0}
-            description="View your exam history"
+            title="Total Quizzes"
+            value={stats.totalQuizzes || 0}
+            description="Total number of quizzes taken"
             icon="📊"
           />
           <StatCard
@@ -315,7 +292,7 @@ const Dashboard = () => {
           <StatCard
             title="Active Streak"
             value={`${stats.streakDays || 0} days`}
-            description="Keep it up!"
+            description={stats.streakDays ? 'Keep it up!' : 'Start a streak today!'}
             icon="🔥"
           />
         </div>
@@ -323,8 +300,8 @@ const Dashboard = () => {
         {/* Charts */}
         <div className="grid gap-6 md:grid-cols-2 mb-8">
           <AccuracyPieChart accuracy={stats.accuracy || 0} />
-          {stats.examStats?.length > 0 && (
-            <SubjectPerformanceChart data={stats.examStats} />
+          {stats.subjectPerformance?.length > 0 && (
+            <SubjectPerformanceChart data={stats.subjectPerformance} />
           )}
         </div>
 
